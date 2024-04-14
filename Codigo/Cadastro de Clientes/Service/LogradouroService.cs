@@ -1,5 +1,6 @@
 ﻿using Core;
 using Core.Service;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Service
 {
-    internal class LogradouroService : ILogradouroService
+    public class LogradouroService : ILogradouroService
     {
         private readonly DesafioCadastroContext _context;
 
@@ -19,27 +20,33 @@ namespace Service
 
         public int Create(Logradouro logradouro)
         {
-            throw new NotImplementedException();
+            _context.Add(logradouro);
+            _context.SaveChanges();
+
+            return logradouro.Id;
         }
 
         public void Delete(int idLogradouro)
         {
-            throw new NotImplementedException();
+            var _logradouro = _context.Logradouros.Find(idLogradouro);
+            _context.Remove(_logradouro);
+            _context.SaveChanges();
         }
 
         public void Edit(Logradouro logradouro)
         {
-            throw new NotImplementedException();
+            _context.Update(logradouro);
+            _context.SaveChanges();
         }
 
         public Logradouro Get(int idLogradouro)
         {
-            throw new NotImplementedException();
+            return _context.Logradouros.Find(idLogradouro);
         }
 
         public IEnumerable<Logradouro> GetAll()
         {
-            throw new NotImplementedException();
+            return _context.Logradouros.AsNoTracking();
         }
     }
 }

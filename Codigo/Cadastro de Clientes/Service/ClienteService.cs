@@ -1,5 +1,6 @@
 ﻿using Core;
 using Core.Service;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,27 +20,34 @@ namespace Service
 
         public int Create(Cliente cliente)
         {
-            throw new NotImplementedException();
+            _context.Add(cliente);
+            _context.SaveChanges();
+
+            return cliente.Id;
         }
 
         public void Delete(int idCliente)
         {
-            throw new NotImplementedException();
+            var _cliente = _context.Clientes.Find(idCliente);
+            _context.Remove(_cliente);
+            _context.SaveChanges();
+
         }
 
         public void Edit(Cliente cliente)
         {
-            throw new NotImplementedException();
+            _context.Update(cliente);
+            _context.SaveChanges();
         }
 
         public Cliente Get(int idCliente)
         {
-            throw new NotImplementedException();
+            return _context.Clientes.Find(idCliente);
         }
 
         public IEnumerable<Cliente> GetAll()
         {
-            throw new NotImplementedException();
+            return _context.Clientes.AsNoTracking();
         }
     }
 }
