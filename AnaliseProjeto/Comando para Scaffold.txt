@@ -1,0 +1,1 @@
+dotnet ef dbcontext scaffold "Server=localhost;Database=CADASTRO_CLIENTES;User=sa;Password=manager;Trusted_Connection=False;TrustServerCertificate=True;" Microsoft.EntityFrameworkCore.SqlServer -p Core -c NomeDoContexto -v -f
