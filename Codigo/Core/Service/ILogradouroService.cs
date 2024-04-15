@@ -11,8 +11,8 @@ namespace Core.Service
         int Create(Logradouro logradouro);
         void Edit(Logradouro logradouro);
         void Delete(int idLogradouro);
-        Logradouro Get(int idLogradouro);
-
+        Logradouro? Get(int idLogradouro);
+        IEnumerable<Logradouro> GetByClient(int idClient);
         IEnumerable<Logradouro> GetAll();
     }
 }

@@ -48,5 +48,12 @@ namespace Service
         {
             return _context.Logradouros.AsNoTracking();
         }
+
+        public IEnumerable<Logradouro> GetByClient(int idClient)
+        {
+            var query = _context.Logradouros.Where(p => p.ClienteId == idClient).AsNoTracking();
+
+            return query;
+        }
     }
 }
