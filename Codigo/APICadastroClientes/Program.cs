@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using Service;
 using System.Text;
 
@@ -27,6 +28,39 @@ builder.Services.AddTransient<ILogradouroService, LogradouroService>();
 
 //mapper
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+//config swagger
+builder.Services.AddSwaggerGen(c =>
+{
+   // c.OperationFilter<SwaggerDefaultValues>();
+
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer"
+    });
+
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement()
+    {
+    {
+        new OpenApiSecurityScheme
+        {
+        Reference = new OpenApiReference
+            {
+            Type = ReferenceType.SecurityScheme,
+            Id = "Bearer"
+            },
+            Scheme = "oauth2",
+            Name = "Bearer",
+            In = ParameterLocation.Header,
+
+        },
+        new List<string>()
+        }
+    });
+});
 
 //token jwt
 var key = Encoding.ASCII.GetBytes(Key.Secret);
