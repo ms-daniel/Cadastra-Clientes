@@ -19,6 +19,11 @@ namespace Cadastro_de_Clientes.Controllers
             _mapper = mapper;
         }
 
+        /// <summary>
+        /// Add a new cliente on database
+        /// </summary>
+        /// <param name="cliente"> data </param>
+        /// <returns></returns>
         [HttpPost]
         public IActionResult Add(ClienteViewModel cliente)
         {
@@ -28,8 +33,12 @@ namespace Cadastro_de_Clientes.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Get all clientes from database
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
-        public IActionResult Get()
+        public IActionResult GetAll()
         {
             var clientes = _clienteService.GetAll();
             var clienteList = _mapper.Map<List<ClienteViewModel>>(clientes);
