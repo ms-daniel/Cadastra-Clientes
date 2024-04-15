@@ -25,7 +25,7 @@ namespace Cadastro_de_Clientes.Controllers
         /// <param name="cliente"> data </param>
         /// <returns></returns>
         [HttpPost]
-        public IActionResult Add([FromForm] ClienteViewModel clienteViewModel)
+        public IActionResult Create([FromForm] ClienteViewModel clienteViewModel)
         {
             //storage img
             var imgPath = Path.Combine("Storage", clienteViewModel.Nome);
