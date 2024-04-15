@@ -11,7 +11,7 @@ namespace Core.Service
         int Create(Cliente cliente);
         void Edit(Cliente cliente);
         void Delete(int idCliente);
-        Cliente Get(int idCliente);
+        Cliente? Get(int idCliente);
 
         IEnumerable<Cliente> GetAll();
     }
