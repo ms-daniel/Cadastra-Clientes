@@ -1,8 +1,12 @@
+using Cadastro_de_Clientes;
 using Core;
 using Core.Service;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Service;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,9 +25,28 @@ builder.Services.AddDbContext<DesafioCadastroContext>(
 builder.Services.AddTransient<IClienteService, ClienteService>();
 builder.Services.AddTransient<ILogradouroService, LogradouroService>();
 
-
 //mapper
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+//token jwt
+var key = Encoding.ASCII.GetBytes(Key.Secret);
+
+builder.Services.AddAuthentication(x =>
+{
+    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(x =>
+{
+    x.RequireHttpsMetadata = false;
+    x.SaveToken = true;
+    x.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(key),
+        ValidateIssuer = false,
+        ValidateAudience = false
+    };
+});
 
 
 var app = builder.Build();
