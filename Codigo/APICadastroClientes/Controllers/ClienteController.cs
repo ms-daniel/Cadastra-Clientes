@@ -31,23 +31,26 @@ namespace Cadastro_de_Clientes.Controllers
         [Route("create")]
         public IActionResult Create([FromForm] ClienteViewModel clienteViewModel)
         {
+            var cliente = _mapper.Map<Cliente>(clienteViewModel);
+
             //storage img
             var imgPath = Path.Combine("Storage", clienteViewModel.Nome);
 
-            if (!Directory.Exists(imgPath))
+            if (clienteViewModel.LogotipoImg != null)
             {
-                Directory.CreateDirectory(imgPath);
+                if (!Directory.Exists(imgPath))
+                {
+                    Directory.CreateDirectory(imgPath);
+                }
+
+                imgPath = Path.Combine(imgPath, clienteViewModel.LogotipoImg.FileName);
+                Stream fileStream = new FileStream(imgPath, FileMode.Create);
+
+
+                clienteViewModel.LogotipoImg.CopyToAsync(fileStream);
+                cliente.Logotipo = imgPath;
             }
-
-            imgPath = Path.Combine(imgPath , clienteViewModel.LogotipoImg.FileName);
-            Stream fileStream = new FileStream(imgPath, FileMode.Create);
-
-
-            clienteViewModel.LogotipoImg.CopyToAsync(fileStream);
-
-            var cliente = _mapper.Map<Cliente>(clienteViewModel);
-            cliente.Logotipo = imgPath;
-
+            
             _clienteService.Create(cliente);
 
             return Ok();
