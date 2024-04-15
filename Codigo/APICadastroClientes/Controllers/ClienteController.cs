@@ -4,10 +4,12 @@ using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
 using Core;
 using Service;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Cadastro_de_Clientes.Controllers
 {
     [ApiController]
+    [Authorize]
     [Route("api/v1/cliente")]
     public class ClienteController : ControllerBase
     {

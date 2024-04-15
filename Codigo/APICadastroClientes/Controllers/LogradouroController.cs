@@ -1,12 +1,14 @@
 ﻿using AutoMapper;
 using Core;
 using Core.Service;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Models;
 
 namespace Cadastro_de_Clientes.Controllers
 {
     [ApiController]
+    [Authorize]
     [Route("api/v1/logradouro")]
     public class LogradouroController : ControllerBase
     {
