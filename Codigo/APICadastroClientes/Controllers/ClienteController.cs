@@ -25,12 +25,38 @@ namespace Cadastro_de_Clientes.Controllers
         /// <param name="cliente"> data </param>
         /// <returns></returns>
         [HttpPost]
-        public IActionResult Add(ClienteViewModel cliente)
+        public IActionResult Add([FromForm] ClienteViewModel clienteViewModel)
         {
-            var clienteCore = _mapper.Map<Cliente>(cliente);
-            _clienteService.Create(clienteCore);
+            //storage img
+            var imgPath = Path.Combine("Storage", clienteViewModel.Nome);
+
+            if (!Directory.Exists(imgPath))
+            {
+                Directory.CreateDirectory(imgPath);
+            }
+
+            imgPath = Path.Combine(imgPath , clienteViewModel.LogotipoImg.FileName);
+            Stream fileStream = new FileStream(imgPath, FileMode.Create);
+
+
+            clienteViewModel.LogotipoImg.CopyToAsync(fileStream);
+
+            var cliente = _mapper.Map<Cliente>(clienteViewModel);
+            cliente.Logotipo = imgPath;
+
+            _clienteService.Create(cliente);
 
             return Ok();
+        }
+
+        [HttpPost]
+        [Route("{id}/download")]
+        public IActionResult DownloadLogotipoImg(int id)
+        {
+            var clienteImg = _clienteService.Get(id);
+            var dataBytes = System.IO.File.ReadAllBytes(clienteImg.Logotipo);
+
+            return File(dataBytes, "Image/png");
         }
 
         /// <summary>
