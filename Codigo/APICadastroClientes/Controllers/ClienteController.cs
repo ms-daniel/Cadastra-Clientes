@@ -3,6 +3,7 @@ using Core.Service;
 using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
 using Core;
+using Service;
 
 namespace Cadastro_de_Clientes.Controllers
 {
@@ -25,6 +26,7 @@ namespace Cadastro_de_Clientes.Controllers
         /// <param name="cliente"> data </param>
         /// <returns></returns>
         [HttpPost]
+        [Route("create")]
         public IActionResult Create([FromForm] ClienteViewModel clienteViewModel)
         {
             //storage img
@@ -49,21 +51,67 @@ namespace Cadastro_de_Clientes.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Download a logotipo from client id
+        /// </summary>
+        /// <param name="id">id client</param>
+        /// <returns></returns>
         [HttpPost]
-        [Route("{id}/download")]
+        [Route("download/{id}")]
         public IActionResult DownloadLogotipoImg(int id)
         {
-            var clienteImg = _clienteService.Get(id);
-            var dataBytes = System.IO.File.ReadAllBytes(clienteImg.Logotipo);
+            var cliente = _clienteService.Get(id);
+            
+            if (cliente == null)
+            {
+                return NotFound($"Cliente não encontrado");
+            }
+
+            var dataBytes = System.IO.File.ReadAllBytes(cliente.Logotipo);
 
             return File(dataBytes, "Image/png");
         }
 
         /// <summary>
-        /// Get all clientes from database
+        /// Delete a client
+        /// </summary>
+        /// <param name="id">client id</param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("delete/{id}")]
+        public IActionResult Delete(int id)
+        {
+            _clienteService.Delete(id);
+            return Ok();
+        }
+
+        /// <summary>
+        /// Get one client
+        /// </summary>
+        /// <param name="id"> client id</param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("get/{id}")]
+        public IActionResult Get(int id)
+        {
+            var cliente = _clienteService.Get(id);
+
+            if (cliente == null)
+            {
+                return NotFound($"Nenhum cliente encontrado");
+            }
+
+            var clienteViewModel = _mapper.Map<ClienteViewModel>(cliente);
+
+            return Ok(clienteViewModel);
+        }
+
+        /// <summary>
+        /// Get all clients from database
         /// </summary>
         /// <returns></returns>
         [HttpGet]
+        [Route("getall")]
         public IActionResult GetAll()
         {
             var clientes = _clienteService.GetAll();
