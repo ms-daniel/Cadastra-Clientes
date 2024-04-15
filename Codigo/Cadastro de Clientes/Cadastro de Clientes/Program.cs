@@ -1,4 +1,7 @@
+using Core;
 using Core.Service;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Service;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,9 +13,17 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-//injection
+//injecao do context
+builder.Services.AddDbContext<DesafioCadastroContext>(
+    options  => options.UseSqlServer(builder.Configuration.GetConnectionString("SqlServer")));
+
+//injecao de services
 builder.Services.AddTransient<IClienteService, ClienteService>();
 builder.Services.AddTransient<ILogradouroService, LogradouroService>();
+
+
+//mapper
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 
 var app = builder.Build();
