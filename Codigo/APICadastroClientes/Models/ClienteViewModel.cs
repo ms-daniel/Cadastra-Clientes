@@ -6,7 +6,8 @@ namespace Models
     {
         public string Nome { get; set; }
         public string Email { get; set; }
-        public string Logotipo { get; set; }
+
+        public IFormFile LogotipoImg { get; set; }
 
     }
 }
