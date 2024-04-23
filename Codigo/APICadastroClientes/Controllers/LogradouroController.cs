@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Models;
 
-namespace Cadastro_de_Clientes.Controllers
+namespace APICadastroClientes.Controllers
 {
     [ApiController]
     [Authorize]

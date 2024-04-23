@@ -6,7 +6,7 @@ using Core;
 using Service;
 using Microsoft.AspNetCore.Authorization;
 
-namespace Cadastro_de_Clientes.Controllers
+namespace APICadastroClientes.Controllers
 {
     [ApiController]
     [Authorize]
