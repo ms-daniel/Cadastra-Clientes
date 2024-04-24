@@ -1,53 +1,50 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-//import Api from './services/Api'
+import api from './services/Api'
 
 const Login = (props) => {
-  const [email, setEmail] = useState('')
+  const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [emailError, setEmailError] = useState('')
   const [passwordError, setPasswordError] = useState('')
+  const [token, setToken] = useState('')
 
   const navigate = useNavigate()
 
   const logIn = () => {
-    fetch('http://localhost:3080/auth', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ email, password }),
-    })
-      .then((r) => r.json())
-      .then((r) => {
-        if ('success' === r.message) {
-          localStorage.setItem('user', JSON.stringify({ email, token: r.token }))
-          props.setLoggedIn(true)
-          props.setEmail(email)
-          navigate('/')
-        } else {
-          window.alert('Wrong email or password')
-        }
+    console.log('Olha aqui o usuário: ' + username); // Certifique-se de que 'username' está definido e tem um valor válido
+    console.log('Olha aqui a senha: ' + password); // Certifique-se de que 'password' está definido e tem um valor válido
+    api
+      .post("/auth/", {
+        username: 'desafio',
+        password: '123456'
       })
+      .then((response) => {
+        console.log('Resposta do servidor:', response.data);
+        setToken(response.data); // Certifique-se de que 'setToken' está definido e faz o que você espera
+      })
+      .catch((err) => {
+        console.error('Erro ao fazer requisição:', err);
+      });
   }
 
   const onButtonClick = () => {
     // Set initial error values to empty
-    setEmailError('')
-    setPasswordError('')
+    setEmailError('');
+    setPasswordError('');
   
     // Check if the user has entered both fields correctly
-    if ('' === email) {
-      setEmailError('Please enter your username')
-      return
+    if ('' === username) {
+      setEmailError('Please enter your username');
+      return;
     }
   
     if ('' === password) {
-      setPasswordError('Please enter a password')
-      return
+      setPasswordError('Please enter a password');
+      return;
     }
   
-    // Authentication calls will be made here...
+    logIn();
   }
 
   return (
@@ -58,9 +55,9 @@ const Login = (props) => {
       <br />
       <div className={'inputContainer'}>
         <input
-          value={email}
+          value={username}
           placeholder="Username"
-          onChange={(ev) => setEmail(ev.target.value)}
+          onChange={(ev) => setUsername(ev.target.value)}
           className={'inputBox'}
         />
         <label className="errorLabel">{emailError}</label>
@@ -74,6 +71,12 @@ const Login = (props) => {
           className={'inputBox'}
         />
         <label className="errorLabel">{passwordError}</label>
+      </div>
+      <br />
+      <div>
+        <p>{ token ? token : 'sem token'}</p>
+        <p>username: {username}</p>
+        <p>senha: {password}</p>
       </div>
       <br />
       <div className={'inputContainer'}>
