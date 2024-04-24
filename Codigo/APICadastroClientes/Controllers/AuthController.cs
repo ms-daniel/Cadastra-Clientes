@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using Models;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 
@@ -17,8 +18,13 @@ namespace APICadastroClientes.Controllers
         }
 
         [HttpPost]
-        public IActionResult Post(string username, string password)
+        public IActionResult Post(string? username, string? password, [FromBody] LoginModel? model)
         {
+            if (model != null && model.Username != "" && !model.Username.Equals("string"))
+            {
+                username = model.Username;
+                password = model.Password;
+            }
             //your logic for login process
             //If login usrename and password are correct then proceed to generate token
             if(username == "desafio" && password == "123456")
@@ -39,7 +45,6 @@ namespace APICadastroClientes.Controllers
             {
                 return BadRequest("Usuario ou senha incorretos");
             }
-            
         }
     }
 }
