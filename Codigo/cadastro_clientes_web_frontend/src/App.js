@@ -1,8 +1,8 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import Home from './Home';
+//import Home from './Home';
 import Login from './Login';
 import './App.css';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(false)
