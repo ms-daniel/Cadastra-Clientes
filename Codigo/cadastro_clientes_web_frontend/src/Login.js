@@ -4,6 +4,18 @@ import api from './services/Api'
 import LoadingComp from './components/Loading'
 import showToastMessage from './components/Notify'
 import {ToastContainer} from "react-toastify";
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+import Box from '@mui/material/Box';
+import IconButton from '@mui/material/IconButton';
+import Input from '@mui/material/Input';
+import FilledInput from '@mui/material/FilledInput';
+import InputLabel from '@mui/material/InputLabel';
+import InputAdornment from '@mui/material/InputAdornment';
+import FormHelperText from '@mui/material/FormHelperText';
+import FormControl from '@mui/material/FormControl';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 const Login = (props) => {
   const [username, setUsername] = useState('desafio')
@@ -11,6 +23,13 @@ const Login = (props) => {
   const [emailError, setEmailError] = useState('')
   const [passwordError, setPasswordError] = useState('')
   const [loadComp, setloadComp] = useState(false)
+  const [showPassword, setShowPassword] = React.useState(false);
+
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  };
 
   const navigate = useNavigate()
 
@@ -60,28 +79,49 @@ const Login = (props) => {
         <div>Login</div>
       </div>
       <br />
-      <div className={'inputContainer'}>
-        <input
-          value={username}
-          placeholder="Username"
-          onChange={(ev) => setUsername(ev.target.value)}
-          className={'inputBox'}
-        />
+      <div>
+        <Box
+          sx={{
+            width: 400,
+            maxWidth: '100%',
+          }}
+        >
+          <TextField
+            id="filled-basic"
+            label="Username"
+            fullWidth 
+            variant="filled" 
+            onChange={(ev) => setUsername(ev.target.value)}
+          />
+        </Box>
         <label className="errorLabel">{emailError}</label>
       </div>
       <br />
-      <div className={'inputContainer'}>
-        <input
-          value={password}
-          placeholder="Password"
-          onChange={(ev) => setPassword(ev.target.value)}
-          className={'inputBox'}
-        />
+      <div>
+        <FormControl sx={{ m: 1, width: '400px' }} variant="filled">
+          <InputLabel htmlFor="filled-adornment-password">Password</InputLabel>
+          <FilledInput
+            id="filled-adornment-password"
+            type={showPassword ? 'text' : 'password'}
+            endAdornment={
+              <InputAdornment position="end">
+                <IconButton
+                  aria-label="toggle password visibility"
+                  onClick={handleClickShowPassword}
+                  onMouseDown={handleMouseDownPassword}
+                  edge="end"
+                >
+                  {showPassword ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+              </InputAdornment>
+            }
+          />
+        </FormControl>
         <label className="errorLabel">{passwordError}</label>
       </div>
       <br />
       <div className={'inputContainer'}>
-        {loadComp ? (<LoadingComp />) : (<input className={'inputButton'} type="button" onClick={onButtonClick} value={'Log in'} />) }
+        {loadComp ? (<LoadingComp />) : (<Button variant="contained" size="large" onClick={onButtonClick}>Login </Button>) }
       </div>
 
       <ToastContainer />
