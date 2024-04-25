@@ -1,39 +1,45 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import api from './services/Api'
+import LoadingComp from './components/Loading'
+import showToastMessage from './components/Notify'
+import {ToastContainer} from "react-toastify";
 
 const Login = (props) => {
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
+  const [username, setUsername] = useState('desafio')
+  const [password, setPassword] = useState('123456')
   const [emailError, setEmailError] = useState('')
   const [passwordError, setPasswordError] = useState('')
-  const [token, setToken] = useState('')
+  const [loadComp, setloadComp] = useState(false)
 
   const navigate = useNavigate()
 
   const logIn = () => {
-    console.log('Olha aqui o usuário: ' + username); // Certifique-se de que 'username' está definido e tem um valor válido
-    console.log('Olha aqui a senha: ' + password); // Certifique-se de que 'password' está definido e tem um valor válido
     api
       .post("/auth/", {
-        username: 'desafio',
-        password: '123456'
+        username: username,
+        password: password
       })
       .then((response) => {
         console.log('Resposta do servidor:', response.data);
-        setToken(response.data); // Certifique-se de que 'setToken' está definido e faz o que você espera
+        localStorage.setItem('accessToken', response.data.token);
+        showToastMessage('success', 'Login successful!');
+        setloadComp(false);
       })
       .catch((err) => {
-        console.error('Erro ao fazer requisição:', err);
+        if(err.data && err.data.fromServer){
+          showToastMessage('error', 'Incorrect username or password.');
+        } else {
+          showToastMessage('error', 'Some unknown error occurred');
+        }
+        setloadComp(false);
       });
   }
 
   const onButtonClick = () => {
-    // Set initial error values to empty
     setEmailError('');
     setPasswordError('');
   
-    // Check if the user has entered both fields correctly
     if ('' === username) {
       setEmailError('Please enter your username');
       return;
@@ -43,6 +49,7 @@ const Login = (props) => {
       setPasswordError('Please enter a password');
       return;
     }
+    setloadComp(true);
   
     logIn();
   }
@@ -73,15 +80,11 @@ const Login = (props) => {
         <label className="errorLabel">{passwordError}</label>
       </div>
       <br />
-      <div>
-        <p>{ token ? token : 'sem token'}</p>
-        <p>username: {username}</p>
-        <p>senha: {password}</p>
-      </div>
-      <br />
       <div className={'inputContainer'}>
-        <input className={'inputButton'} type="button" onClick={onButtonClick} value={'Log in'} />
+        {loadComp ? (<LoadingComp />) : (<input className={'inputButton'} type="button" onClick={onButtonClick} value={'Log in'} />) }
       </div>
+
+      <ToastContainer />
     </div>
   )
 }
