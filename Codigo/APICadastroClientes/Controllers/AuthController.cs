@@ -40,10 +40,10 @@ namespace APICadastroClientes.Controllers
 
                 var token = new JwtSecurityTokenHandler().WriteToken(Sectoken);
 
-                return Ok(token);
+                return Ok(new { token = token});
             } else
             {
-                return BadRequest("Usuario ou senha incorretos");
+                return BadRequest( new { fromServer = "Usuario ou senha incorretos" });
             }
         }
     }
