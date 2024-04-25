@@ -27,10 +27,10 @@ const Login = (props) => {
         setloadComp(false);
       })
       .catch((err) => {
-        if(err.data && err.data.fromServer){
+        if(err.response && err.response.data && err.response.data.fromServer){
           showToastMessage('error', 'Incorrect username or password.');
         } else {
-          showToastMessage('error', 'Some unknown error occurred');
+          showToastMessage('error', 'Some unknown error occurred: ');
         }
         setloadComp(false);
       });
