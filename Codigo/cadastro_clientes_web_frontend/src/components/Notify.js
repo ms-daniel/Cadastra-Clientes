@@ -1,5 +1,5 @@
 import React from "react";
-import {toast, ToastContainer} from "react-toastify";
+import {toast, ToastContainer, Flip} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const showToastMessage = (type, message) => {
@@ -7,27 +7,27 @@ const showToastMessage = (type, message) => {
         case 'error':
            toast.error(message, {
                 position: "top-center",
-                autoClose: 3000,
+                autoClose: 2000,
                 hideProgressBar: false,
                 closeOnClick: true,
                 pauseOnHover: true,
                 draggable: true,
                 progress: undefined,
                 theme: "colored",
-                //transition: "Bounce",
+                transition: Flip,
             });
             break;
         case 'success':
             toast.success(message, {
                 position: "top-center",
-                autoClose: 3000, 
+                autoClose: 1500, 
                 hideProgressBar: false,
                 closeOnClick: true,
                 pauseOnHover: true,
                 draggable: true,
                 progress: undefined,
                 theme: "colored",
-                //transition: "Flip",
+                transition: Flip,
             });
             break;
         default:
