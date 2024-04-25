@@ -1,10 +1,12 @@
-import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import {logIn} from '../services/Api'
-import LoadingComp from '../components/Loading'
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import {logIn} from '../services/Api';
+import LoadingComp from '../components/Loading';
 import {ToastContainer} from "react-toastify";
 import Button from '@mui/material/Button';
 import {UsernameField, PasswordField} from '../components/LoginComponents';
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 
 const Login = (props) => {
   const [usernameValue, setUsername] = useState('desafio')
@@ -34,31 +36,35 @@ const Login = (props) => {
   }
 
   return (
-    <div className={'mainContainer'}>
-      <div className={'titleContainer'}>
-        <div>Login</div>
-      </div>
-      <br />
-      <div>
-        <UsernameField usernameValue={usernameValue} setFunction={setUsername}/>
-        <label className="errorLabel">{emailError}</label>
-      </div>
+    <>
+      { props.loggedIn ? (navigate('/home')) : (
+          <div className={'container-fluid flex'}>
 
-      <br />
+            <div className={'titleContainer'}>
+              <div>Login</div>
+            </div>
+            <br />
+            <div className="d-flex justify-content-center">
+              <UsernameField usernameValue={usernameValue} setFunction={setUsername}/>
+              {/*<label className="errorLabel">{emailError}</label>*/}
+            </div>
 
-      <div>
-        <PasswordField passwordValue={passwordValue} setFunction={setPassword}/>
-        <label className="errorLabel">{passwordError}</label>
-      </div>
+            <div className="d-flex justify-content-center">
+              <PasswordField passwordValue={passwordValue} setFunction={setPassword}/>
+              {/*<label className="errorLabel">{passwordError}</label>*/}
+            </div>
 
-      <br />
-      <div className={'inputContainer'}>
-        {loadComp ? (<LoadingComp />) : (<Button variant="contained" size="large" onClick={onButtonClick}>Login </Button>) }
-      </div>
+            <br />
+            <div className="d-flex justify-content-center">
+              {loadComp ? (<LoadingComp />) : (<Button variant="contained" size="large" onClick={onButtonClick}>Login </Button>) }
+            </div>
 
-      <ToastContainer />
-    </div>
-  )
+            <ToastContainer />
+          </div>
+        )
+      }
+    </>
+  );
 }
 
-export default Login
+export default Login;
