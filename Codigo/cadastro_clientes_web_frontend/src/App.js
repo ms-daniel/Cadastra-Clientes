@@ -8,7 +8,7 @@ function App() {
   const [loggedIn, setLoggedIn] = useState(false)
 
   return (
-    <div className="App container d-flex align-items-center justify-content-center vh-100">
+    <div className="App">
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Navigate to="/login" />} />

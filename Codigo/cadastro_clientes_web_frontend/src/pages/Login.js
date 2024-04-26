@@ -36,7 +36,7 @@ const Login = (props) => {
   }
 
   return (
-    <>
+    <div className='container d-flex align-items-center justify-content-center vh-100'>
       { props.loggedIn ? (navigate('/home')) : (
           <div className={'container-fluid flex'}>
 
@@ -63,7 +63,7 @@ const Login = (props) => {
           </div>
         )
       }
-    </>
+    </div>
   );
 }
 
