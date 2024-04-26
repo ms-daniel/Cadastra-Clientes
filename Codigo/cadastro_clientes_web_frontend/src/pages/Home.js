@@ -13,6 +13,7 @@ import HomeIcon from '@mui/icons-material/Home';
 import Divider from '@mui/material/Divider';
 import Box from '@mui/material/Box';
 import DataTable from '../components/DataTable'
+import {ToastContainer} from "react-toastify";
 
 
 const Home = (props) => {
@@ -63,7 +64,7 @@ const Home = (props) => {
                     See the last 5 adresses
                 </Typography>
             </Box>
-
+            <ToastContainer />
         </div>
     );
 };
