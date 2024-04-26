@@ -10,7 +10,7 @@ namespace APICadastroClientes.Controllers
 {
     [ApiController]
     [Authorize]
-    [Route("api/v1/cliente")]
+    [Route("api/v1/client")]
     public class ClienteController : ControllerBase
     {
         private readonly IClienteService _clienteService;
@@ -117,7 +117,7 @@ namespace APICadastroClientes.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("getall")]
-        public IActionResult GetAll()
+        public IActionResult GetAll(int pageNumber, int pageQuantity)
         {
             var clientes = _clienteService.GetAll();
             var clienteList = _mapper.Map<List<ClienteViewModel>>(clientes);
