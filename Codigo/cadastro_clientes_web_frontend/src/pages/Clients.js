@@ -35,14 +35,12 @@ const Clients = (props) => {
 
     useEffect(() => {
         const fetchclients = async () => {
-            //console.log('entrou');
             try {
                 const data = await getClients({ pageNumber: 1, pageQuantity: 5 });
-                console.log(data);
                 setClients(data);
             } catch (error) {
                 console.error('Error fetching clients:', error);
-                showToastMessage('error', 'Failed to fetch clients.');
+                //showToastMessage('error', 'Failed to fetch clients.');
             }
         };
 
