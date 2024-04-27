@@ -29,14 +29,19 @@ const logIn = ({usernameValue, passwordValue, setLoadComp}) => {
 
 const getCustomers = ({pageNumber, pageQuantity}) => {
   const token = localStorage.getItem('accessToken');
-
+  
   if (token){
+    const config = {
+      headers: { Authorization: `Bearer ${token}` }
+    };
+    console.log(config);
     api
     .post("/v1/client/getall", {
       params: {
         pageNumber: pageNumber,
         pageQuantity: pageQuantity 
-      }
+      },
+      config
     })
     .then((response) => {
       console.log(response);
@@ -50,9 +55,9 @@ const getCustomers = ({pageNumber, pageQuantity}) => {
       
     });
   } else {
-
+    showToastMessage('error', 'Invalid token.');
   }
   
 };
 
-export {logIn};
+export {logIn, getCustomers};
