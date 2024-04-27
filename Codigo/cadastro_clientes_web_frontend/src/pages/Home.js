@@ -56,7 +56,7 @@ const Home = (props) => {
                 <DrawerAppBar />
                 <Toolbar />
             </div>
-            <div className='row'>
+            <div className='row  mt-3'>
                 <Typography variant="h3" className='d-flex align-items-center'>
                     Home <HomeIcon sx={{ fontSize: 50 }} />
                 </Typography>

@@ -58,7 +58,7 @@ const Clients = (props) => {
                 <Toolbar />
             </div>
 
-            <div className='d-flex flex-row align-items-center'>
+            <div className='d-flex flex-row align-items-center mt-3'>
                 <div className='col text-start'>
                     <Typography variant="h3" className='d-flex align-items-center'>
                         Clients <PersonIcon sx={{ fontSize: 50 }} />
