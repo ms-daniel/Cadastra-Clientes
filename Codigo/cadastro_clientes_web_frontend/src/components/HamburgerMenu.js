@@ -13,10 +13,15 @@ import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
+import { Link as RouterLink } from 'react-router-dom';
 
 
 const drawerWidth = 300;
-const navItems = ['Customers', 'Adresses', 'Logout'];
+const navItems = [
+  { Name: 'Customers', Link: '/customers' },
+  { Name: 'Addresses', Link: '/addresses' },
+  { Name: 'Logout', Link: '/login' }
+];
 
 export default function DrawerAppBar() {
   const [mobileOpen, setMobileOpen] = React.useState(false);
@@ -33,9 +38,9 @@ export default function DrawerAppBar() {
       <Divider />
       <List>
         {navItems.map((item) => (
-          <ListItem key={item} disablePadding>
-            <ListItemButton sx={{ textAlign: 'center' }}>
-              <ListItemText primary={item} />
+          <ListItem key={item.Name} disablePadding>
+            <ListItemButton href={item.Link} sx={{ textAlign: 'center' }}>
+              <ListItemText primary={item.Name} /> {/* Ajuste aqui */}
             </ListItemButton>
           </ListItem>
         ))}
@@ -67,8 +72,8 @@ export default function DrawerAppBar() {
           </Typography>
           <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
             {navItems.map((item) => (
-              <Button key={item} sx={{ color: '#fff' }}>
-                {item}
+              <Button key={item.Name} sx={{ color: '#fff' }} href={item.Link}>
+                {item.Name}
               </Button>
             ))}
           </Box>
