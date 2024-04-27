@@ -5,59 +5,57 @@ const api = axios.create({
   baseURL: "https://localhost:7268/api",
 });
 
-const logIn = ({usernameValue, passwordValue, setLoadComp}) => {
-  api
-    .post("/auth/", {
+const logIn = ({ usernameValue, passwordValue}) => {
+  return new Promise((resolve, reject) => {
+    api.post("/auth/", {
       username: usernameValue,
       password: passwordValue
     })
     .then((response) => {
-      //console.log('Resposta do servidor:', response.data);
       localStorage.setItem('accessToken', response.data.token);
       showToastMessage('success', 'Login successful!');
-      setLoadComp(false);
+      resolve(true); // Resolve a promessa com true quando o login for bem-sucedido
     })
     .catch((err) => {
-      if(err.response && err.response.data && err.response.data.fromServer){
+      if (err.response && err.response.data && err.response.data.fromServer) {
         showToastMessage('error', 'Incorrect username or password.');
       } else {
         showToastMessage('error', 'Some unknown error occurred.');
       }
-      setLoadComp(false);
+      reject(false); // Rejeita a promessa com false quando o login falhar
     });
+  });
 };
 
-const getCustomers = ({pageNumber, pageQuantity}) => {
-  const token = localStorage.getItem('accessToken');
-  
-  if (token){
-    const config = {
-      headers: { Authorization: `Bearer ${token}` }
-    };
-    console.log(config);
-    api
-    .post("/v1/client/getall", {
-      params: {
-        pageNumber: pageNumber,
-        pageQuantity: pageQuantity 
-      },
-      config
-    })
-    .then((response) => {
-      console.log(response);
-    })
-    .catch((err) => {
-      if(err.response && err.response.data && err.response.data.fromServer){
-        //showToastMessage('error', 'Incorrect username or password.');
-      } else {
-        showToastMessage('error', 'Some unknown error occurred.');
-      }
-      
-    });
-  } else {
-    showToastMessage('error', 'Invalid token.');
-  }
-  
+
+const getCustomers = ({ pageNumber, pageQuantity }) => {
+  return new Promise((resolve, reject) => {
+    const token = localStorage.getItem('accessToken');
+
+    if (token) {
+      const config = {
+        headers: { Authorization: `Bearer ${token}` },
+        params: { pageNumber, pageQuantity }
+      };
+
+      api.get("/v1/client/getall", config)
+        .then((response) => {
+          resolve(response.data); // Resolva a promessa com os dados da resposta
+        })
+        .catch((err) => {
+          if (err.response && err.response.status === 401) {
+            showToastMessage('error', 'Request not authorized');
+          } else {
+            showToastMessage('error', 'Some unknown error occurred.');
+          }
+          reject(err); // Rejeite a promessa com o erro
+        });
+    } else {
+      showToastMessage('error', 'Invalid token.');
+      reject(new Error('Invalid token')); // Rejeite a promessa com um erro
+    }
+  });
 };
+
 
 export {logIn, getCustomers};
