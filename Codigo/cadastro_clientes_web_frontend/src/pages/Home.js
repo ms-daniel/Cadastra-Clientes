@@ -14,7 +14,7 @@ import Divider from '@mui/material/Divider';
 import Box from '@mui/material/Box';
 import DataTable from '../components/DataTable'
 import {ToastContainer} from "react-toastify";
-import {getCustomers} from '../services/Api'
+import {getClients} from '../services/Api'
 import Button from '@mui/material/Button';
 
 
@@ -22,28 +22,28 @@ import Button from '@mui/material/Button';
 const Home = (props) => {
     const navigate = useNavigate();
 
-    const colCustomers = [
+    const colClients = [
         { field: 'id', headerName: 'ID', width: 70 },
-        { field: 'nome', headerName: 'Name', width: 130 },
-        { field: 'email', headerName: 'Email', width: 130 }
+        { field: 'nome', headerName: 'Name', width: 250 },
+        { field: 'email', headerName: 'Email', width: 250 }
     ];
 
-    const [customers, setCustomers] = useState([]);
+    const [clients, setClients] = useState([]);
 
     useEffect(() => {
-        const fetchCustomers = async () => {
+        const fetchClients = async () => {
             //console.log('entrou');
             try {
-                const data = await getCustomers({ pageNumber: 1, pageQuantity: 5 });
-                setCustomers(data);
+                const data = await getClients({ pageNumber: 1, pageQuantity: 5 });
+                setClients(data);
             } catch (error) {
-                console.error('Error fetching customers:', error);
-                showToastMessage('error', 'Failed to fetch customers.');
+                console.error('Error fetching clients:', error);
+                showToastMessage('error', 'Failed to fetch clients.');
             }
         };
 
         if (props.loggedIn) {
-            fetchCustomers();
+            fetchClients();
         } else {
             navigate('/login');
         }
@@ -68,10 +68,10 @@ const Home = (props) => {
                 <div className='d-flex flex-row align-items-center'>
                     <div className='col text-start'>
                         <Typography variant="h5" ml={0}>
-                            <b>Customers</b>
+                            <b>Clients</b>
                         </Typography>
                         <Typography variant="subtitle1" gutterBottom>
-                            See the last 5 customers
+                            See the last 5 clients
                         </Typography>
                     </div>
                     <div className='col text-end'>
@@ -79,7 +79,7 @@ const Home = (props) => {
                     </div>
                 </div>
 
-                <DataTable cols={colCustomers} rows={customers} />
+                <DataTable cols={colClients} rows={clients} />
             </div>
 
             <Divider flexItem sx={{borderColor: 'black'}}/>

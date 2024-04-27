@@ -28,7 +28,7 @@ const logIn = ({ usernameValue, passwordValue}) => {
 };
 
 
-const getCustomers = ({ pageNumber, pageQuantity }) => {
+const getClients = ({ pageNumber, pageQuantity }) => {
   return new Promise((resolve, reject) => {
     const token = localStorage.getItem('accessToken');
 
@@ -58,4 +58,4 @@ const getCustomers = ({ pageNumber, pageQuantity }) => {
 };
 
 
-export {logIn, getCustomers};
+export {logIn, getClients};
