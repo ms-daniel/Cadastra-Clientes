@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useState,useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import showToastMessage from '../components/Notify';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -19,18 +19,32 @@ import {getCustomers} from '../services/Api'
 
 
 const Home = (props) => {
-    const navigate = useNavigate()
+    const navigate = useNavigate();
 
-    const style = {
-        borderColor: 'black',
-      };
+    const colCustomers = [
+        { field: 'id', headerName: 'ID', width: 70 },
+        { field: 'nome', headerName: 'Name', width: 130 },
+        { field: 'email', headerName: 'Email', width: 130 }
+    ];
+
+    const [customers, setCustomers] = useState([]);
+
+    getCustomers({ pageNumber: 1, pageQuantity: 5 })
+    .then((data) => {
+    console.log(data);
+    setCustomers(data); // Atualizar o estado com os dados dos clientes
+    })
+    .catch((error) => {
+    // Lidar com erros
+    console.error('Error fetching customers:', error);
+    });
 
     useEffect(() => {
-        /*if (!props.loggedIn) {
+        if (!props.loggedIn) {
             navigate('/login');
-        }*/
-        getCustomers(1,5);
+        }
     }, [props.loggedIn, navigate]);
+
 
     return(
         <div className='container flex'>
@@ -54,7 +68,7 @@ const Home = (props) => {
                     See the last 5 customers
                 </Typography>
 
-                <DataTable />
+                <DataTable cols={colCustomers} rows={customers} />
             </Box>
 
             <Divider flexItem sx={{borderColor: 'black'}}/>
