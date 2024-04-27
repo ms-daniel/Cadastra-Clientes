@@ -1,8 +1,8 @@
 import React, { useState,useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import showToastMessage from '../components/Notify';
+import showToastMessage from '../../components/Notify';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import DrawerAppBar from '../components/HamburgerMenu';
+import DrawerAppBar from '../../components/HamburgerMenu';
 import Typography from '@mui/material/Typography';
 import Toolbar from '@mui/material/Toolbar';
 import '@fontsource/roboto/300.css';
@@ -11,15 +11,16 @@ import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import Divider from '@mui/material/Divider';
 import Box from '@mui/material/Box';
-import DataTable from '../components/DataTable'
+import DataTable from '../../components/DataTable'
 import {ToastContainer} from "react-toastify";
-import {getClients} from '../services/Api'
+import {getClients} from '../../services/Api'
 import Button from '@mui/material/Button';
 import PersonIcon from '@mui/icons-material/Person';
 import AddIcon from '@mui/icons-material/Add';
 import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { red, blue } from '@mui/material/colors';
 
 
 
@@ -42,12 +43,14 @@ const Clients = (props) => {
                 <IconButton
                 aria-label="edit"
                 onClick={() => handleEdit(params.row.id)}
+                sx={{ color: blue['A700'] }} 
                 >
                 <EditIcon />
                 </IconButton>
                 <IconButton
                 aria-label="delete"
                 onClick={() => handleDelete(params.row.id)}
+                sx={{ color: red['A700'] }}
                 >
                 <DeleteIcon />
                 </IconButton>
@@ -102,7 +105,7 @@ const Clients = (props) => {
                     </Typography>
                 </div>
                 <div className='col text-end'>
-                    <Button variant="contained" size="large" href="#"> 
+                    <Button variant="contained" size="large" href="/clients/create"> 
                         <AddIcon /> New Client
                     </Button>
                 </div>
