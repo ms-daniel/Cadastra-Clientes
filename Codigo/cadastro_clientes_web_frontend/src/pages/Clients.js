@@ -25,8 +25,10 @@ const Clients = (props) => {
 
     const colClients = [
         { field: 'id', headerName: 'ID', width: 70 },
-        { field: 'nome', headerName: 'Name', width: 250 },
-        { field: 'email', headerName: 'Email', width: 250 }
+        { field: 'name', headerName: 'Name', width: 250 },
+        { field: 'email', headerName: 'Email', width: 250 },
+        { field: 'addresses', headerName: 'Addresses', width: 250},
+        { field: 'actions', headerName: 'Actions', width: 250}
     ];
 
     const [clients, setClients] = useState([]);

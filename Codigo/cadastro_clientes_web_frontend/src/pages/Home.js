@@ -24,7 +24,7 @@ const Home = (props) => {
 
     const colClients = [
         { field: 'id', headerName: 'ID', width: 70 },
-        { field: 'nome', headerName: 'Name', width: 250 },
+        { field: 'name', headerName: 'Name', width: 250 },
         { field: 'email', headerName: 'Email', width: 250 }
     ];
 
@@ -86,10 +86,10 @@ const Home = (props) => {
 
             <Box sx={{ textAlign: 'left' }} className='container px-0 my-3'>
                 <Typography variant="h5">
-                    <b>Adresses</b>
+                    <b>Addresses</b>
                 </Typography>
                 <Typography variant="subtitle1" gutterBottom>
-                    See the last 5 adresses
+                    See the last 5 addresses
                 </Typography>
             </Box>
             <ToastContainer />
