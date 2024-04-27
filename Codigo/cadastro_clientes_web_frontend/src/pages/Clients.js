@@ -17,6 +17,9 @@ import {getClients} from '../services/Api'
 import Button from '@mui/material/Button';
 import PersonIcon from '@mui/icons-material/Person';
 import AddIcon from '@mui/icons-material/Add';
+import IconButton from '@mui/material/IconButton';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 
 
@@ -24,14 +27,44 @@ const Clients = (props) => {
     const navigate = useNavigate();
 
     const colClients = [
-        { field: 'id', headerName: 'ID', width: 70 },
-        { field: 'name', headerName: 'Name', width: 250 },
-        { field: 'email', headerName: 'Email', width: 250 },
-        { field: 'addresses', headerName: 'Addresses', width: 250},
-        { field: 'actions', headerName: 'Actions', width: 250}
+        { field: 'id', headerName: 'ID', width: 70 , flex: 1},
+        { field: 'name', headerName: 'Name', width: 150, flex: 2 },
+        { field: 'email', headerName: 'Email', width: 200, flex: 3},
+        { field: 'addresses', headerName: 'Addresses', width: 90, flex: 1},
+        { 
+            field: 'actions',
+            headerName: 'Actions',
+            width: 250,
+            flex: 2 ,
+            sortable: false,
+            renderCell: (params) => (
+            <div>
+                <IconButton
+                aria-label="edit"
+                onClick={() => handleEdit(params.row.id)}
+                >
+                <EditIcon />
+                </IconButton>
+                <IconButton
+                aria-label="delete"
+                onClick={() => handleDelete(params.row.id)}
+                >
+                <DeleteIcon />
+                </IconButton>
+            </div>
+            ),
+        }
     ];
 
     const [clients, setClients] = useState([]);
+
+    const handleEdit = (id) => {
+        console.log('Editar item com ID:', id);
+      };
+    
+      const handleDelete = (id) => {
+        console.log('Excluir item com ID:', id);
+      };
 
     useEffect(() => {
         const fetchclients = async () => {
