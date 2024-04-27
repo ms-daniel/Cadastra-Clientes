@@ -18,7 +18,7 @@ import { Link as RouterLink } from 'react-router-dom';
 
 const drawerWidth = 300;
 const navItems = [
-  { Name: 'Customers', Link: '/customers' },
+  { Name: 'Clients', Link: '/clients' },
   { Name: 'Addresses', Link: '/addresses' },
   { Name: 'Logout', Link: '/login' }
 ];
