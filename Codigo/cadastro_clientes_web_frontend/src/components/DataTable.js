@@ -7,13 +7,7 @@ export default function DataTable({cols, rows}) {
       <DataGrid
         rows={rows}
         columns={cols}
-        initialState={{
-          pagination: {
-            paginationModel: { page: 0, pageSize: 5 },
-          },
-        }}
-        pageSizeOptions={[5, 10]}
-        checkboxSelection
+        autoPageSize
       />
     </div>
   );
