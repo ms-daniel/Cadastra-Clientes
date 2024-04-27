@@ -5,16 +5,17 @@ using AutoMapper;
 using Core;
 using Service;
 using Microsoft.AspNetCore.Authorization;
+using Core.DTO;
 
 namespace APICadastroClientes.Controllers
 {
     [ApiController]
     [Authorize]
-    [Route("api/v1/client")]
+    [Route("api/client")]
     public class ClienteController : ControllerBase
     {
         private readonly IClienteService _clienteService;
-        IMapper _mapper;
+        private IMapper _mapper;
 
         public ClienteController(IClienteService clienteService, IMapper mapper)
         {
@@ -31,7 +32,8 @@ namespace APICadastroClientes.Controllers
         [Route("create")]
         public IActionResult Create([FromForm] ClientSetViewModel clienteViewModel)
         {
-            var cliente = _mapper.Map<Cliente>(clienteViewModel);
+            var clienteDTO = _mapper.Map<ClienteDTO>(clienteViewModel);
+            var cliente = _mapper.Map<Cliente>(clienteDTO);
 
             //storage img
             var imgPath = Path.Combine("Storage", clienteViewModel.Name);
@@ -106,7 +108,7 @@ namespace APICadastroClientes.Controllers
                 return NotFound($"Nenhum cliente encontrado");
             }
 
-            var clienteViewModel = _mapper.Map<ClientGetViewModel>(cliente);
+            var clienteViewModel = _mapper.Map<ClienteDTO>(cliente);
 
             return Ok(clienteViewModel);
         }

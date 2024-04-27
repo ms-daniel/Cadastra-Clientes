@@ -1,5 +1,5 @@
-import React, { useState,useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import React, { useState,useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import showToastMessage from '../../components/Notify';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import DrawerAppBar from '../../components/HamburgerMenu';
@@ -12,7 +12,6 @@ import '@fontsource/roboto/700.css';
 import Divider from '@mui/material/Divider';
 import Box from '@mui/material/Box';
 import DataTable from '../../components/DataTable'
-import {ToastContainer} from "react-toastify";
 import {getClients} from '../../services/Api'
 import Button from '@mui/material/Button';
 import PersonIcon from '@mui/icons-material/Person';
@@ -21,6 +20,7 @@ import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { red, blue } from '@mui/material/colors';
+import Layout from '../../shared/Layout';
 
 
 
@@ -89,12 +89,7 @@ const Clients = (props) => {
 
 
     return(
-        <div className='container flex'>
-            <div className='row'>
-                <DrawerAppBar />
-                <Toolbar />
-            </div>
-
+        <Layout>
             <div className='d-flex flex-row align-items-center mt-3'>
                 <div className='col text-start'>
                     <Typography variant="h3" className='d-flex align-items-center'>
@@ -116,9 +111,7 @@ const Clients = (props) => {
 
                 <DataTable cols={colClients} rows={clients} />
             </div>
-
-            <ToastContainer />
-        </div>
+        </Layout>
     );
 };
 

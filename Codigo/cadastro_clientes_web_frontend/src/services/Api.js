@@ -38,7 +38,7 @@ const getClients = ({ pageNumber, pageQuantity }) => {
         params: { pageNumber, pageQuantity }
       };
 
-      api.get("/v1/client/getall", config)
+      api.get("/client/getall", config)
         .then((response) => {
           resolve(response.data); // Resolva a promessa com os dados da resposta
         })
@@ -48,14 +48,45 @@ const getClients = ({ pageNumber, pageQuantity }) => {
           } else {
             showToastMessage('error', 'Some unknown error occurred.');
           }
-          reject(err); // Rejeite a promessa com o erro
+          reject(err);
         });
     } else {
       showToastMessage('error', 'Invalid token.');
-      reject(new Error('Invalid token')); // Rejeite a promessa com um erro
+      reject(new Error('Invalid token')); 
+    }
+  });
+};
+
+const createClient = (formData) => {
+  return new Promise((resolve, reject) => {
+    const token = localStorage.getItem('accessToken');
+
+    if (token) {
+      const config = {
+        headers: { Authorization: `Bearer ${token}` },
+        'Content-Type': 'multipart/form-data',
+      };
+
+      api.post("/client/create", formData, config)
+        .then((response) => {
+          showToastMessage('success', 'Created Client!');
+          resolve(true);
+        })
+        .catch((err) => {
+          if (err.response && err.response.status === 401) {
+            showToastMessage('error', 'Request not authorized');
+          } else {
+            showToastMessage('error', 'Some unknown error occurred.');
+          }
+          reject(err);
+        });
+    } else {
+      showToastMessage('error', 'Invalid token.');
+      reject(new Error('Invalid token'));
     }
   });
 };
 
 
-export {logIn, getClients};
+
+export {logIn, getClients, createClient};

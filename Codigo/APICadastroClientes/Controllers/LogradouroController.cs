@@ -9,7 +9,7 @@ namespace APICadastroClientes.Controllers
 {
     [ApiController]
     [Authorize]
-    [Route("api/v1/logradouro")]
+    [Route("api/logradouro")]
     public class LogradouroController : ControllerBase
     {
         private readonly ILogradouroService _logradouroService;
@@ -24,6 +24,7 @@ namespace APICadastroClientes.Controllers
         }
 
         [HttpPost]
+        [Route ("/create")]
         public IActionResult Create([FromForm] LogradouroViewModel logradouroViewModel)
         {
             var cliente = _clienteService.Get(logradouroViewModel.ClienteId);

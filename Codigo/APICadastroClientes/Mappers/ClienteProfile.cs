@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Models;
 using Core.DTO;
+using Core;
 
 namespace Mappers
 {
@@ -10,6 +11,7 @@ namespace Mappers
         {
             CreateMap<ClientSetViewModel, ClienteDTO>().ReverseMap();
             CreateMap<ClientGetViewModel, ClienteDTO>().ReverseMap();
+            CreateMap<ClienteDTO, Cliente>().ReverseMap();
         }
     }
 }
