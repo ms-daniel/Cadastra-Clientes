@@ -34,7 +34,7 @@ public partial class DesafioCadastroContext : DbContext
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.Email).HasMaxLength(255);
             entity.Property(e => e.Logotipo).HasMaxLength(255);
-            entity.Property(e => e.Nome).HasMaxLength(255);
+            entity.Property(e => e.Name).HasMaxLength(255);
         });
 
         modelBuilder.Entity<Logradouro>(entity =>

@@ -1,4 +1,5 @@
 ﻿using Core;
+using Core.DTO;
 using Core.Service;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -12,10 +13,12 @@ namespace Service
     public class ClienteService : IClienteService
     {
         private readonly DesafioCadastroContext _context;
+        private readonly ILogradouroService _logradouroService;
 
-        public ClienteService(DesafioCadastroContext context)
+        public ClienteService(DesafioCadastroContext context, ILogradouroService logradouroService)
         {
             _context = context;
+            _logradouroService = logradouroService;
         }
 
         public int Create(Cliente cliente)
@@ -45,9 +48,19 @@ namespace Service
             return _context.Clientes.Find(idCliente);
         }
 
-        public IEnumerable<Cliente> GetAll()
+        public IEnumerable<ClienteDTO> GetAll(int pageNumber, int pageQuantity)
         {
-            return _context.Clientes.AsNoTracking();
+            return _context.Clientes.Skip(pageNumber * pageQuantity)
+                .Take(pageQuantity)
+                .Select(b =>
+                new ClienteDTO()
+                {
+                    Id = b.Id,
+                    Name = b.Name,
+                    Email = b.Email,
+                    Logotipo = b.Logotipo,
+                    Addresses = _logradouroService.Count(b.Id)
+                }).ToList();
         }
     }
 }

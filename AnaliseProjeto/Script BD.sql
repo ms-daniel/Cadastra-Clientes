@@ -14,7 +14,7 @@ USE CADASTRO_CLIENTES;
 
 CREATE TABLE Clientes (
     ID INT IDENTITY(1,1) PRIMARY KEY,
-    Nome NVARCHAR(255) NOT NULL,
+    Name NVARCHAR(255) NOT NULL,
     Email NVARCHAR(255) UNIQUE NOT NULL,
     Logotipo NVARCHAR(255), -- caminho para arquivo da img
 );

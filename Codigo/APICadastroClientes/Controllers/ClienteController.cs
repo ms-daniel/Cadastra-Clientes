@@ -119,7 +119,7 @@ namespace APICadastroClientes.Controllers
         [Route("getall")]
         public IActionResult GetAll(int pageNumber, int pageQuantity)
         {
-            var clientes = _clienteService.GetAll();
+            var clientes = _clienteService.GetAll(pageNumber, pageQuantity);
             var clienteList = _mapper.Map<List<ClientGetViewModel>>(clientes);
             
             return Ok(clienteList);

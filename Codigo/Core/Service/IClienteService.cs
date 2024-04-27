@@ -13,6 +13,6 @@ namespace Core.Service
         void Delete(int idCliente);
         Cliente? Get(int idCliente);
 
-        IEnumerable<Cliente> GetAll();
+        List<Cliente> GetAll(int pageNumber, int pageQuantity);
     }
 }

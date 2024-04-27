@@ -55,5 +55,10 @@ namespace Service
 
             return query;
         }
+
+        public int Count(int idClient)
+        {
+            return _context.Logradouros.AsNoTracking().Count(a => a.ClienteId == idClient);
+        }
     }
 }

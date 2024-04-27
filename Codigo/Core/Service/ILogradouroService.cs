@@ -14,5 +14,7 @@ namespace Core.Service
         Logradouro? Get(int idLogradouro);
         IEnumerable<Logradouro> GetByClient(int idClient);
         IEnumerable<Logradouro> GetAll();
+
+        int Count(int idClient);
     }
 }
