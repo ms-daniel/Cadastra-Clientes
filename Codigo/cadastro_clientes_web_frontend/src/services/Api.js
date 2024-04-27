@@ -40,6 +40,7 @@ const getClients = ({ pageNumber, pageQuantity }) => {
 
       api.get("/v1/client/getall", config)
         .then((response) => {
+          console.log('data dentro do apiu: ' + response.data);
           resolve(response.data); // Resolva a promessa com os dados da resposta
         })
         .catch((err) => {

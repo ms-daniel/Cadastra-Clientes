@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Core.DTO;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,6 +14,6 @@ namespace Core.Service
         void Delete(int idCliente);
         Cliente? Get(int idCliente);
 
-        List<Cliente> GetAll(int pageNumber, int pageQuantity);
+        IEnumerable<ClienteDTO> GetAll(int pageNumber, int pageQuantity);
     }
 }

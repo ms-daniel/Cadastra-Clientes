@@ -10,7 +10,7 @@ namespace APICadastroClientes.Controllers
     [ApiController]
     public class LoginController : ControllerBase
     {
-        private IConfiguration _config;
+        private readonly IConfiguration _config;
 
         public LoginController(IConfiguration config)
         {

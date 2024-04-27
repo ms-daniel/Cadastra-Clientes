@@ -50,17 +50,31 @@ namespace Service
 
         public IEnumerable<ClienteDTO> GetAll(int pageNumber, int pageQuantity)
         {
-            return _context.Clientes.Skip(pageNumber * pageQuantity)
+            // Obter os clientes paginados
+            var clientes = _context.Clientes
+                .Skip((pageNumber - 1) * pageQuantity)
                 .Take(pageQuantity)
-                .Select(b =>
-                new ClienteDTO()
+                .ToList(); // Materializar os dados do banco de dados
+
+            // Mapear os clientes para DTOs
+            var clientesDTO = clientes.Select(cliente =>
+            {
+                // Contar o número de logradouros para este cliente
+                int numLogradouros = _logradouroService.Count(cliente.Id);
+
+                // Criar o DTO do cliente
+                return new ClienteDTO
                 {
-                    Id = b.Id,
-                    Name = b.Name,
-                    Email = b.Email,
-                    Logotipo = b.Logotipo,
-                    Addresses = _logradouroService.Count(b.Id)
-                }).ToList();
+                    Id = cliente.Id,
+                    Name = cliente.Name,
+                    Email = cliente.Email,
+                    Logotipo = cliente.Logotipo,
+                    Addresses = numLogradouros
+                };
+            });
+
+            return clientesDTO.ToList(); // Converte para lista
         }
+
     }
 }

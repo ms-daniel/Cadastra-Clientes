@@ -34,7 +34,7 @@ namespace APICadastroClientes.Controllers
             var cliente = _mapper.Map<Cliente>(clienteViewModel);
 
             //storage img
-            var imgPath = Path.Combine("Storage", clienteViewModel.Nome);
+            var imgPath = Path.Combine("Storage", clienteViewModel.Name);
 
             if (clienteViewModel.LogotipoImg != null)
             {
