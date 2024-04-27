@@ -32,7 +32,13 @@ const Login = (props) => {
     }
     setLoadComp(true);
   
-    logIn({usernameValue, passwordValue, setLoadComp});
+    logIn({usernameValue, passwordValue})
+    .then((loggedIn) => {
+      navigate('/home')
+    })
+    .catch((error) => {
+      setLoadComp(false);
+    });
   }
 
   return (
