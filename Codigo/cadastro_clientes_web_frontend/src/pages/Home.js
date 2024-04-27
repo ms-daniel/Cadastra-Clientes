@@ -2,7 +2,6 @@ import React, { useState,useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import showToastMessage from '../components/Notify';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import DrawerAppBar from '../components/HamburgerMenu';
 import Typography from '@mui/material/Typography';
 import Toolbar from '@mui/material/Toolbar';
 import '@fontsource/roboto/300.css';
@@ -16,6 +15,7 @@ import DataTable from '../components/DataTable'
 import {ToastContainer} from "react-toastify";
 import {getClients} from '../services/Api'
 import Button from '@mui/material/Button';
+import Layout from '../shared/Layout';
 
 
 
@@ -50,11 +50,7 @@ const Home = (props) => {
 
 
     return(
-        <div className='container flex'>
-            <div className='row'>
-                <DrawerAppBar />
-                <Toolbar />
-            </div>
+        <Layout>
             <div className='row  mt-3'>
                 <Typography variant="h3" className='d-flex align-items-center'>
                     Home <HomeIcon sx={{ fontSize: 50 }} />
@@ -92,7 +88,7 @@ const Home = (props) => {
                 </Typography>
             </Box>
             <ToastContainer />
-        </div>
+        </Layout>
     );
 };
 
