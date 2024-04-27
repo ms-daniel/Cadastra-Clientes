@@ -15,6 +15,7 @@ import Box from '@mui/material/Box';
 import DataTable from '../components/DataTable'
 import {ToastContainer} from "react-toastify";
 import {getCustomers} from '../services/Api'
+import Button from '@mui/material/Button';
 
 
 
@@ -29,18 +30,21 @@ const Home = (props) => {
 
     const [customers, setCustomers] = useState([]);
 
-    getCustomers({ pageNumber: 1, pageQuantity: 5 })
-    .then((data) => {
-    console.log(data);
-    setCustomers(data); // Atualizar o estado com os dados dos clientes
-    })
-    .catch((error) => {
-    // Lidar com erros
-    console.error('Error fetching customers:', error);
-    });
-
     useEffect(() => {
-        if (!props.loggedIn) {
+        const fetchCustomers = async () => {
+            //console.log('entrou');
+            try {
+                const data = await getCustomers({ pageNumber: 1, pageQuantity: 5 });
+                setCustomers(data);
+            } catch (error) {
+                console.error('Error fetching customers:', error);
+                showToastMessage('error', 'Failed to fetch customers.');
+            }
+        };
+
+        if (props.loggedIn) {
+            fetchCustomers();
+        } else {
             navigate('/login');
         }
     }, [props.loggedIn, navigate]);
@@ -60,16 +64,23 @@ const Home = (props) => {
 
             <Divider flexItem sx={{borderColor: 'black'}}/>
 
-            <Box sx={{ textAlign: 'left' }} className='container px-0 my-3'>
-                <Typography variant="h5">
-                    <b>Customers</b>
-                </Typography>
-                <Typography variant="subtitle1" gutterBottom>
-                    See the last 5 customers
-                </Typography>
+            <div className='container px-0 my-3 d-flex flex-column'>
+                <div className='d-flex flex-row align-items-center'>
+                    <div className='col text-start'>
+                        <Typography variant="h5" ml={0}>
+                            <b>Customers</b>
+                        </Typography>
+                        <Typography variant="subtitle1" gutterBottom>
+                            See the last 5 customers
+                        </Typography>
+                    </div>
+                    <div className='col text-end'>
+                        <Button variant="contained" size="large" href="#">See All</Button>
+                    </div>
+                </div>
 
                 <DataTable cols={colCustomers} rows={customers} />
-            </Box>
+            </div>
 
             <Divider flexItem sx={{borderColor: 'black'}}/>
 
