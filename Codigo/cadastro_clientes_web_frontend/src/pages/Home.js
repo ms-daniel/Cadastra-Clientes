@@ -14,6 +14,8 @@ import Divider from '@mui/material/Divider';
 import Box from '@mui/material/Box';
 import DataTable from '../components/DataTable'
 import {ToastContainer} from "react-toastify";
+import {getCustomers} from '../services/Api'
+
 
 
 const Home = (props) => {
@@ -27,6 +29,7 @@ const Home = (props) => {
         /*if (!props.loggedIn) {
             navigate('/login');
         }*/
+        getCustomers(1,5);
     }, [props.loggedIn, navigate]);
 
     return(
