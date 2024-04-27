@@ -29,7 +29,7 @@ namespace APICadastroClientes.Controllers
         /// <returns></returns>
         [HttpPost]
         [Route("create")]
-        public IActionResult Create([FromForm] ClienteViewModel clienteViewModel)
+        public IActionResult Create([FromForm] ClientSetViewModel clienteViewModel)
         {
             var cliente = _mapper.Map<Cliente>(clienteViewModel);
 
@@ -106,7 +106,7 @@ namespace APICadastroClientes.Controllers
                 return NotFound($"Nenhum cliente encontrado");
             }
 
-            var clienteViewModel = _mapper.Map<ClienteViewModel>(cliente);
+            var clienteViewModel = _mapper.Map<ClientGetViewModel>(cliente);
 
             return Ok(clienteViewModel);
         }
@@ -120,7 +120,7 @@ namespace APICadastroClientes.Controllers
         public IActionResult GetAll(int pageNumber, int pageQuantity)
         {
             var clientes = _clienteService.GetAll();
-            var clienteList = _mapper.Map<List<ClienteViewModel>>(clientes);
+            var clienteList = _mapper.Map<List<ClientGetViewModel>>(clientes);
             
             return Ok(clienteList);
         }

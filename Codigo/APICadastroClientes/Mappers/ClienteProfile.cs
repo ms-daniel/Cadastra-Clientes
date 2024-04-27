@@ -8,7 +8,8 @@ namespace Mappers
     {
         public ClienteProfile()
         {
-            CreateMap<ClienteViewModel, Cliente>().ReverseMap();
+            CreateMap<ClientSetViewModel, Cliente>().ReverseMap();
+            CreateMap<ClientGetViewModel, Cliente>().ReverseMap();
         }
     }
 }
