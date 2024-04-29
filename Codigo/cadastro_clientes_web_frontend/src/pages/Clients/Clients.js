@@ -1,5 +1,5 @@
 import React, { useState,useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import showToastMessage from '../../components/Notify';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import DrawerAppBar from '../../components/HamburgerMenu';
@@ -12,7 +12,7 @@ import '@fontsource/roboto/700.css';
 import Divider from '@mui/material/Divider';
 import Box from '@mui/material/Box';
 import DataTable from '../../components/DataTable'
-import {getClients} from '../../services/Api'
+import {getClients, deleteClient} from '../../services/Api'
 import Button from '@mui/material/Button';
 import PersonIcon from '@mui/icons-material/Person';
 import AddIcon from '@mui/icons-material/Add';
@@ -21,11 +21,16 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { red, blue } from '@mui/material/colors';
 import Layout from '../../shared/Layout';
+import { ModalDelete } from '../../components/Modals';
 
 
 
 const Clients = (props) => {
     const navigate = useNavigate();
+    const location = useLocation();
+    const [selectedClientId, setSelectedClientId] = useState(null);
+    const [clientName, setClientName] = useState('');
+    const [openModal, setOpenModal] = useState(false);
 
     const colClients = [
         { field: 'id', headerName: 'ID', width: 70 , flex: 1},
@@ -49,7 +54,7 @@ const Clients = (props) => {
                 </IconButton>
                 <IconButton
                 aria-label="delete"
-                onClick={() => handleDelete(params.row.id)}
+                onClick={() => handleDeleteModal(params.row.id, params.row.name)}
                 sx={{ color: red['A700'] }}
                 >
                 <DeleteIcon />
@@ -61,26 +66,56 @@ const Clients = (props) => {
 
     const [clients, setClients] = useState([]);
 
-    const handleEdit = (id) => {
+    const handleEdit = async (id) => {
         console.log('Editar item com ID:', id);
-      };
+    };
+
+    const handleDeleteModal = async (id, name) => {
+        console.log('Editar item com ID:', id);
+        setSelectedClientId(id);
+        setClientName(name);
+        setOpenModal(true);
+    };
     
-      const handleDelete = (id) => {
+    const handleDelete = async (id) => {
         console.log('Excluir item com ID:', id);
-      };
+        if (props.loggedIn) {
+            try{
+                if( await deleteClient(id) ){
+                    console.log('Client deleted successfully.');
+                    fetchclients();
+                } else {
+                    console.log('Error when trying to delete client.');
+                }
+            } catch (error) {
+                console.log('Error when trying to request delete client.');
+            }
+            
+        } else {
+            navigate('/login');
+        }
+    };
+
+    const handleCloseModal = () => {
+        setOpenModal(false);
+        setSelectedClientId(null);
+    };
+
+    const fetchclients = async () => {
+        try {
+            const data = await getClients({ pageNumber: 1, pageQuantity: 5 });
+            setClients(data);
+        } catch (error) {
+            console.error('Error fetching clients:', error);
+            //showToastMessage('error', 'Failed to fetch clients.');
+        }
+    };
 
     useEffect(() => {
-        const fetchclients = async () => {
-            try {
-                const data = await getClients({ pageNumber: 1, pageQuantity: 5 });
-                setClients(data);
-            } catch (error) {
-                console.error('Error fetching clients:', error);
-                //showToastMessage('error', 'Failed to fetch clients.');
-            }
-        };
-
         if (props.loggedIn) {
+            /*if(location.state.type != null){
+                console.log('tem noticfcicaoca');
+            }*/
             fetchclients();
         } else {
             navigate('/login');
@@ -107,10 +142,21 @@ const Clients = (props) => {
             </div>
 
             <div className='container px-0 my-3 d-flex flex-column'>
-                
-
                 <DataTable cols={colClients} rows={clients} />
             </div>
+
+            {selectedClientId && (
+                <ModalDelete
+                    open={openModal} // Passando estado para controlar a abertura do modal
+                    onClose={handleCloseModal}
+                    onEdit={() => handleEdit(selectedClientId)}
+                    onDelete={() => {
+                        handleDelete(selectedClientId);
+                        handleCloseModal(); // Fechar o modal após excluir
+                    }}
+                    clientName = {clientName}
+                />
+            )}
         </Layout>
     );
 };
