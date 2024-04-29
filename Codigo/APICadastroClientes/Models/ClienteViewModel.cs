@@ -11,7 +11,7 @@ namespace Models
         [Required]
         public string Email { get; set; }
 
-        public IFormFile LogotipoImg { get; set; }
+        public IFormFile? LogotipoImg { get; set; }
 
     }
 
