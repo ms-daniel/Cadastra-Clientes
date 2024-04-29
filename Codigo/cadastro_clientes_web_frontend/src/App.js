@@ -3,7 +3,8 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import { ToastContainer } from 'react-toastify';
 import Clients from './pages/Clients/Clients';
-import { ClientCreate } from './pages/Clients/Create';
+import ClientCreate from './pages/Clients/Create';
+import ClientEdit from './pages/Clients/Edit';
 import './App.css';
 import React, { useState } from 'react';
 
@@ -20,6 +21,7 @@ function App() {
 
           <Route path="/clients" element={<Clients loggedIn={loggedIn} setLoggedIn={setLoggedIn}/>} />
           <Route path="/clients/create" element={<ClientCreate loggedIn={loggedIn} setLoggedIn={setLoggedIn}/>} />
+          <Route path="/clients/edit/:id" element={<ClientEdit loggedIn={loggedIn} setLoggedIn={setLoggedIn}/>} />
 
           <Route path="/home" element={<Home loggedIn={loggedIn} setLoggedIn={setLoggedIn} />}/>
         </Routes>

@@ -33,7 +33,7 @@ const logIn = ({ usernameValue, passwordValue}) => {
  * @param {number} pageQuantity - number of lines per page
  * @returns 
  */
-const getClients = ({ pageNumber, pageQuantity }) => {
+const getAllClients = ({ pageNumber, pageQuantity }) => {
   return new Promise((resolve, reject) => {
     const token = localStorage.getItem('accessToken');
 
@@ -44,6 +44,39 @@ const getClients = ({ pageNumber, pageQuantity }) => {
       };
 
       api.get("/client/getall", config)
+        .then((response) => {
+          resolve(response.data); // Resolva a promessa com os dados da resposta
+        })
+        .catch((err) => {
+          if (err.response && err.response.status === 401) {
+            showToastMessage('error', 'Request not authorized');
+          } else {
+            showToastMessage('error', 'Some unknown error occurred.');
+          }
+          reject(err);
+        });
+    } else {
+      showToastMessage('error', 'Invalid token.');
+      reject(new Error('Invalid token')); 
+    }
+  });
+};
+
+/**
+ * requests a clients
+ * @param {number} id - client id
+ * @returns 
+ */
+const getClient = (id) => {
+  return new Promise((resolve, reject) => {
+    const token = localStorage.getItem('accessToken');
+
+    if (token) {
+      const config = {
+        headers: { Authorization: `Bearer ${token}` },
+      };
+
+      api.get("/client/get/"+id, config)
         .then((response) => {
           resolve(response.data); // Resolva a promessa com os dados da resposta
         })
@@ -147,4 +180,4 @@ const deleteClient = (idClient) => {
 
 
 
-export {logIn, getClients, createClient, deleteClient};
+export {logIn, getAllClients, getClient,createClient, deleteClient};
