@@ -1,7 +1,7 @@
 import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 import Home from './pages/Home';
 import Login from './pages/Login';
-
+import { ToastContainer } from 'react-toastify';
 import Clients from './pages/Clients/Clients';
 import { ClientCreate } from './pages/Clients/Create';
 import './App.css';
@@ -12,6 +12,7 @@ function App() {
 
   return (
     <div className="App">
+      <ToastContainer limit={2} stacked />
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Navigate to="/login" />} />
