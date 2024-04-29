@@ -79,6 +79,20 @@ namespace APICadastroClientes.Controllers
             return File(dataBytes, "Image/png");
         }
 
+        [HttpGet]
+        [Route("logotipoUrl/{id}")]
+        public IActionResult GetLogotipoUrl(int id)
+        {
+            var cliente = _clienteService.Get(id);
+
+            if (cliente == null)
+            {
+                return NotFound($"Cliente não encontrado");
+            }
+
+            return Ok(new { logotipoUrl = cliente.Logotipo }); // Supondo que cliente.Logotipo seja a URL do logotipo
+        }
+
         /// <summary>
         /// Delete a client
         /// </summary>
