@@ -12,7 +12,7 @@ import '@fontsource/roboto/700.css';
 import Divider from '@mui/material/Divider';
 import Box from '@mui/material/Box';
 import DataTable from '../../components/DataTable'
-import {getClients, deleteClient} from '../../services/Api'
+import {getAllClients, deleteClient} from '../../services/Api'
 import Button from '@mui/material/Button';
 import PersonIcon from '@mui/icons-material/Person';
 import AddIcon from '@mui/icons-material/Add';
@@ -67,7 +67,7 @@ const Clients = (props) => {
     const [clients, setClients] = useState([]);
 
     const handleEdit = async (id) => {
-        console.log('Editar item com ID:', id);
+        navigate(`/clients/edit/${id}`);
     };
 
     const handleDeleteModal = async (id, name) => {
@@ -103,7 +103,7 @@ const Clients = (props) => {
 
     const fetchclients = async () => {
         try {
-            const data = await getClients({ pageNumber: 1, pageQuantity: 5 });
+            const data = await getAllClients({ pageNumber: 1, pageQuantity: 5 });
             setClients(data);
         } catch (error) {
             console.error('Error fetching clients:', error);

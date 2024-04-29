@@ -12,7 +12,7 @@ import HomeIcon from '@mui/icons-material/Home';
 import Divider from '@mui/material/Divider';
 import Box from '@mui/material/Box';
 import DataTable from '../components/DataTable'
-import {getClients} from '../services/Api'
+import {getAllClients} from '../services/Api'
 import Button from '@mui/material/Button';
 import Layout from '../shared/Layout';
 
@@ -32,7 +32,7 @@ const Home = (props) => {
     useEffect(() => {
         const fetchClients = async () => {
             try {
-                const data = await getClients({ pageNumber: 1, pageQuantity: 5 });
+                const data = await getAllClients({ pageNumber: 1, pageQuantity: 5 });
                 setClients(data);
             } catch (error) {
                 console.error('Error fetching clients:', error);
