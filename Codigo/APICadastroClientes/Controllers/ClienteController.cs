@@ -84,12 +84,33 @@ namespace APICadastroClientes.Controllers
         /// </summary>
         /// <param name="id">client id</param>
         /// <returns></returns>
-        [HttpPost]
+        [HttpDelete]
         [Route("delete/{id}")]
         public IActionResult Delete(int id)
         {
-            _clienteService.Delete(id);
-            return Ok();
+            try
+            {
+                var cliente = _clienteService.Get(id);
+                if (cliente == null)
+                {
+                    return NotFound(); // Cliente não encontrado
+                }
+
+                var imgPath = Path.Combine("Storage", cliente.Logotipo);
+                // Excluir a pasta que contém a imagem, se existir
+                if (!string.IsNullOrEmpty(cliente.Logotipo) && Directory.Exists(imgPath))
+                {
+                    Directory.Delete(imgPath, true);
+                }
+
+                _clienteService.Delete(id);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest();
+            }
+            
         }
 
         /// <summary>
