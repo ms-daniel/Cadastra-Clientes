@@ -1,5 +1,5 @@
 import axios from "axios";
-import showToastMessage from '../components/Notify'
+import showToastMessage from '../components/Notify';
 
 const api = axios.create({
   baseURL: "https://localhost:7268/api",
@@ -27,7 +27,12 @@ const logIn = ({ usernameValue, passwordValue}) => {
   });
 };
 
-
+/**
+ * requests list of clients
+ * @param {number} pageNumber - current page
+ * @param {number} pageQuantity - number of lines per page
+ * @returns 
+ */
 const getClients = ({ pageNumber, pageQuantity }) => {
   return new Promise((resolve, reject) => {
     const token = localStorage.getItem('accessToken');
@@ -57,6 +62,11 @@ const getClients = ({ pageNumber, pageQuantity }) => {
   });
 };
 
+/**
+ * client creation
+ * @param {formData} formData - data for client creation
+ * @returns 
+ */
 const createClient = (formData) => {
   return new Promise((resolve, reject) => {
     const token = localStorage.getItem('accessToken');
@@ -69,19 +79,67 @@ const createClient = (formData) => {
 
       api.post("/client/create", formData, config)
         .then((response) => {
-          showToastMessage('success', 'Created Client!');
+          resolve(
+            {
+              msgType: 'success',
+              msg: 'Client created successfully!'
+            }
+          );
+        })
+        .catch((err) => {
+          if (err.response && err.response.status === 401) {
+            reject(
+              {
+                msgType: 'error',
+                msg: 'Request not authorized.'
+              }
+            );
+          } else {
+            reject(
+              {
+                msgType: 'error',
+                msg: 'Some unknown error occurred.'
+              }
+            );
+          }
+          
+        });
+    } else {
+      reject(
+        {
+          msgType: 'info',
+          msg: 'Invalid token. Need login.'
+        }
+      );
+    }
+  });
+};
+
+const deleteClient = (idClient) => {
+  return new Promise((resolve, reject) => {
+    const token = localStorage.getItem('accessToken');
+
+    if (token) {
+      const config = {
+        headers: { Authorization: `Bearer ${token}` },
+        params: { id: idClient }
+      };
+
+      api.delete("/client/delete/" + idClient, config)
+        .then((response) => {
+          showToastMessage('success', 'Client deleted successfully');
           resolve(true);
         })
         .catch((err) => {
           if (err.response && err.response.status === 401) {
             showToastMessage('error', 'Request not authorized');
           } else {
-            showToastMessage('error', 'Some unknown error occurred.');
+            showToastMessage('error', 'Error when trying to delete client.');
           }
           reject(err);
         });
     } else {
-      showToastMessage('error', 'Invalid token.');
+      showToastMessage('info', 'Invalid token.');
       reject(new Error('Invalid token'));
     }
   });
@@ -89,4 +147,4 @@ const createClient = (formData) => {
 
 
 
-export {logIn, getClients, createClient};
+export {logIn, getClients, createClient, deleteClient};
