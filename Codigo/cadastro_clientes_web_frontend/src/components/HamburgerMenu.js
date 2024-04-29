@@ -13,7 +13,8 @@ import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink} from 'react-router-dom';
+import Link from '@mui/material/Link';
 
 
 const drawerWidth = 300;
@@ -33,7 +34,9 @@ export default function DrawerAppBar() {
   const drawer = (
     <Box onClick={handleDrawerToggle} sx={{ textAlign: 'center' }}>
       <Typography variant="h6" sx={{ my: 2 }}>
-        CadaClies
+        <Link hrfef="/home" color="inherit">
+          CadaClies
+        </Link>
       </Typography>
       <Divider />
       <List>
@@ -62,14 +65,12 @@ export default function DrawerAppBar() {
           >
             <MenuIcon />
           </IconButton>
-          <Typography
-            variant="h6"
-            component="div"
+          <Box
             sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
             className='justify-content-start d-sm-flex'
           >
-            CadaClies
-          </Typography>
+            <Button variant="text" size='large' style={{ fontSize: '20px' }} href='/home'>CadaClies</Button>
+          </Box>
           <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
             {navItems.map((item) => (
               <Button key={item.Name} sx={{ color: '#fff' }} href={item.Link}>

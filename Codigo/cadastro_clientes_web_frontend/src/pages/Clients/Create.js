@@ -5,7 +5,7 @@ import { createClient } from '../../services/Api';
 import { useNavigate } from 'react-router-dom';
 import showToastMessage from '../../components/Notify';
 
-const Create = () => {
+const ClientCreate = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [logotipoImg, setLogotipoImg] = useState(null);
@@ -103,4 +103,4 @@ const Create = () => {
   );
 };
 
-export {Create as ClientCreate};
+export default ClientCreate;

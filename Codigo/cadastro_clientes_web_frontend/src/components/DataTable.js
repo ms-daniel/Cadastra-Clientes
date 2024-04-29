@@ -8,6 +8,7 @@ export default function DataTable({cols, rows}) {
         rows={rows}
         columns={cols}
         autoPageSize
+        rowsLoadingMode="server"
       />
     </div>
   );
