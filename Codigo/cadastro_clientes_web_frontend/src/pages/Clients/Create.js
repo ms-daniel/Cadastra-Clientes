@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { TextField, Button, Typography, Box } from '@mui/material';
 import Layout from '../../shared/Layout';
 import { createClient } from '../../services/Api';
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom';
+import showToastMessage from '../../components/Notify';
 
 const Create = () => {
   const [name, setName] = useState('');
@@ -31,10 +32,17 @@ const Create = () => {
     formData.append('LogotipoImg', logotipoImg);
 
     try {
-        await createClient(formData);
-
+        await createClient(formData)
+        .then((promise) => {
+            navigate('/clients', { replace: true });
+            showToastMessage(promise.msgType, promise.msg);
+        })
+        .catch((error) => {
+            showToastMessage(error.msgType, error.msg);
+        });
     } catch (error) {
         console.error('Erro ao criar a entidade:', error);
+        
     }
   };
 
