@@ -95,6 +95,34 @@ const getClient = (id) => {
   });
 };
 
+const getLogotipo = (id) => {
+  return new Promise((resolve, reject) => {
+    const token = localStorage.getItem('accessToken');
+
+    if (token) {
+      const config = {
+        headers: { Authorization: `Bearer ${token}` },
+      };
+
+      api.get("/client/GetLogotipoUrl/"+id, config)
+        .then((response) => {
+          resolve(response.data); // Resolva a promessa com os dados da resposta
+        })
+        .catch((err) => {
+          if (err.response && err.response.status === 401) {
+            showToastMessage('error', 'Request not authorized');
+          } else {
+            showToastMessage('error', 'Some unknown error occurred.');
+          }
+          reject(err);
+        });
+    } else {
+      showToastMessage('error', 'Invalid token.');
+      reject(new Error('Invalid token')); 
+    }
+  });
+}
+
 /**
  * client creation
  * @param {formData} formData - data for client creation
