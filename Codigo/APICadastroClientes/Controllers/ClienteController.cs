@@ -6,6 +6,7 @@ using Core;
 using Service;
 using Microsoft.AspNetCore.Authorization;
 using Core.DTO;
+using HeyRed.Mime;
 
 namespace APICadastroClientes.Controllers
 {
@@ -63,8 +64,8 @@ namespace APICadastroClientes.Controllers
         /// </summary>
         /// <param name="id">id client</param>
         /// <returns></returns>
-        [HttpPost]
-        [Route("download/{id}")]
+        [HttpGet]
+        [Route("images/{id}")]
         public IActionResult DownloadLogotipoImg(int id)
         {
             var cliente = _clienteService.Get(id);
@@ -73,10 +74,15 @@ namespace APICadastroClientes.Controllers
             {
                 return NotFound($"Cliente não encontrado");
             }
+            else if (cliente.Logotipo == null)
+            {
+                return NotFound(new { msg = "CsLT" });
+            }
 
-            var dataBytes = System.IO.File.ReadAllBytes(cliente.Logotipo);
+            byte[] imagemBytes = System.IO.File.ReadAllBytes(cliente.Logotipo);
+            var tipoConteudo = MimeTypesMap.GetMimeType(cliente.Logotipo);
 
-            return File(dataBytes, "Image/png");
+            return File(imagemBytes, tipoConteudo);
         }
 
         [HttpGet]
