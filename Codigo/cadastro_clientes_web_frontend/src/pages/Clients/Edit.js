@@ -3,10 +3,11 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { TextField, Button, Box, Typography } from '@mui/material';
 import { editClient } from '../../services/Api';
 import Layout from '../../shared/Layout';
-import { getClient, getLogotipo } from '../../services/Api';
+import { getClient, getLogotipo, updateClient } from '../../services/Api';
 import { Card, CardContent, CardMedia, styled } from '@mui/material';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import noImage from '../../assets/images/noimage.png';
+import showToastMessage from '../../components/Notify';
 
 const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
@@ -18,25 +19,62 @@ const VisuallyHiddenInput = styled('input')({
     left: 0,
     whiteSpace: 'nowrap',
     width: 1,
-  });
+});
 
 const ClientEdit = (props) => {
     const navigate = useNavigate();
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+    const [logotipoImg, setLogotipoImg] = useState(null);
+    const [logoView, setLogoView] = useState(noImage);
+
     const { id } = useParams(); // Obtém o id do cliente da URL
 
-    const [formData, setFormData] = useState({
-        name: '',
-        email: '',
-        logotipoImg: null
-    });
+    const handleNameChange = (event) => {
+        setName(event.target.value);
+    };
+    
+    const handleEmailChange = (event) => {
+        setEmail(event.target.value);
+    };
+
+    const handleLogotipoImgChange = (event) => {
+        const cachedURL = URL.createObjectURL(event.target.files[0]);
+        setLogoView(cachedURL);
+        setLogotipoImg(event.target.files[0]);
+    };
+
+    const handleSubmit = async () => {
+        const formData = new FormData();
+        formData.append('Id', id);
+        formData.append('Name', name);
+        formData.append('Email', email);
+        formData.append('LogotipoImg', logotipoImg);
+
+        try {
+            await updateClient(formData)
+            .then((promise) => {
+                navigate('/clients', { replace: true });
+                showToastMessage(promise.msgType, promise.msg);
+            })
+            .catch((error) => {
+                showToastMessage(error.msgType, error.msg);
+            });
+        } catch (error) {
+            console.error('Error updating entity', error);
+            showToastMessage('error', 'errraaaado');
+        }
+    };
 
     const fetchClient = async () => {
         try {
-            const data = await getClient(id);
-            setFormData(data);
+            await getClient(id)
+            .then((response) => {
+                setName(response.name);
+                setEmail(response.email);
+            });
         } catch (error) {
-            console.error('Error fetching clients:', error);
-            //showToastMessage('error', 'Failed to fetch clients.');
+
         }
     };
 
@@ -44,14 +82,14 @@ const ClientEdit = (props) => {
         try {
             await getLogotipo(id)
             .then((response) => {
-                document.getElementById('logoImg').innerHTML = `<img src="data:image/png;base64,${response}" class="rounded img-fluid img-thumbnail" width="50%"/>`;
+                if(response != null) {
+                    setLogoView("data:image/png;base64," + response);
+                }
             });
         } catch (error) {
-            if(error === 404){
-                document.getElementById('logoImg').innerHTML = `<img src=${noImage} class="rounded img-fluid img-thumbnail" width="50%"/>`;
+            if ( error === 401) {
+                showToastMessage('error', 'Request not authorized');
             }
-            console.error('Error fetching logo:', error);
-            //showToastMessage('error', 'Failed to fetch clients.');
         }
     };
 
@@ -78,27 +116,15 @@ const ClientEdit = (props) => {
         });
     };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        
-        try {
-            console.log
-            //await editClient(id, formData);
-            //navigate('/clients');
-        } catch (error) {
-            console.error('Erro ao editar cliente:', error);
-            
-        }
-    };
-
     return (
         <Layout>
             <Box sx={{ maxWidth: 400, margin: 'auto', padding: 2 }} className='flex col align-items-center my-5 py-5'>
                 <Typography variant="h4" align="center" gutterBottom>
                     <b>Edit Client</b>
                 </Typography>
-                <form onSubmit={handleSubmit}>
+                <form>
                     <div id="logoImg">
+                        <img src={logoView} className="rounded img-fluid img-thumbnail" width="50%" id="imgLogotipo"/>
                     </div>
 
                     <Button
@@ -110,14 +136,14 @@ const ClientEdit = (props) => {
                         startIcon={<CloudUploadIcon />}
                     >
                         Change Image
-                        <VisuallyHiddenInput type="file" accept=".png, .jpg" onChange={handleFileChange}/>
+                        <VisuallyHiddenInput type="file" accept=".png, .jpg" onChange={handleLogotipoImgChange}/>
                     </Button>
 
                     <TextField
                         label="Nome"
                         name="name"
-                        value={formData.name}
-                        onChange={handleChange}
+                        value={name}
+                        onChange={handleNameChange}
                         fullWidth
                         margin="normal"
                         required
@@ -125,8 +151,8 @@ const ClientEdit = (props) => {
                     <TextField
                         label="Email"
                         name="email"
-                        value={formData.email}
-                        onChange={handleChange}
+                        value={email}
+                        onChange={handleEmailChange}
                         fullWidth
                         margin="normal"
                         required
@@ -143,8 +169,12 @@ const ClientEdit = (props) => {
                             Back to the List
                         </Button>
 
-                        <Button type="submit" variant="contained" color="primary">
-                            Salvar Alterações
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={handleSubmit}
+                        >
+                            Save
                         </Button>
                     </div>
                 </form>
