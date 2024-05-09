@@ -11,6 +11,7 @@ namespace Mappers
         {
             CreateMap<ClientSetViewModel, ClienteDTO>().ReverseMap();
             CreateMap<ClientGetViewModel, ClienteDTO>().ReverseMap();
+            CreateMap<ClientSetViewModel, Cliente>().ReverseMap();
             CreateMap<ClienteDTO, Cliente>().ReverseMap();
         }
     }
