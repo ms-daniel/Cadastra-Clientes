@@ -7,6 +7,9 @@ using Service;
 using Microsoft.AspNetCore.Authorization;
 using Core.DTO;
 using HeyRed.Mime;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Data.SqlClient;
+using Microsoft.IdentityModel.Tokens;
 
 namespace APICadastroClientes.Controllers
 {
@@ -33,30 +36,109 @@ namespace APICadastroClientes.Controllers
         [Route("create")]
         public IActionResult Create([FromForm] ClientSetViewModel clienteViewModel)
         {
-            var clienteDTO = _mapper.Map<ClienteDTO>(clienteViewModel);
-            var cliente = _mapper.Map<Cliente>(clienteDTO);
-
-            //storage img
-            var imgPath = Path.Combine("Storage", clienteViewModel.Name);
+            var cliente = _mapper.Map<Cliente>(clienteViewModel);
 
             if (clienteViewModel.LogotipoImg != null)
             {
+                //storage img
+                var imgPath = Path.Combine("Storage", clienteViewModel.Name);
+
                 if (!Directory.Exists(imgPath))
                 {
                     Directory.CreateDirectory(imgPath);
                 }
 
                 imgPath = Path.Combine(imgPath, clienteViewModel.LogotipoImg.FileName);
-                Stream fileStream = new FileStream(imgPath, FileMode.Create);
 
+                using (Stream fileStream = new FileStream(imgPath, FileMode.Create))
+                {
+                    clienteViewModel.LogotipoImg.CopyTo(fileStream);
+                }
 
-                clienteViewModel.LogotipoImg.CopyToAsync(fileStream);
                 cliente.Logotipo = imgPath;
             }
-            
-            _clienteService.Create(cliente);
+            try
+            {
+                _clienteService.Create(cliente);
+            }
+            catch (DbUpdateException ex)
+            {
+                var innerEx = ex.InnerException;
+                if (innerEx is SqlException sqlEx && sqlEx.Number == 2627)
+                {
+                    return BadRequest(new { error = "SqlUE" } );
+                }
+                else
+                {
+                    throw;
+                }
+            }
 
             return Ok();
+        }
+
+        [HttpPut]
+        [Route("edit")]
+        public IActionResult Edit([FromForm] ClientSetViewModel clienteViewModel)
+        {
+            try
+            {
+                var clienteExistent = _clienteService.Get(clienteViewModel.Id);
+
+                if (clienteExistent == null)
+                {
+                    return NotFound(new { error = "Client not found" });
+                }
+
+                if (clienteViewModel.LogotipoImg != null)
+                {
+                    var imgPath = Path.Combine("Storage", clienteExistent.Name);
+                    var imgPathUpdate = Path.Combine("Storage", clienteViewModel.Name);
+
+                    if (clienteViewModel.LogotipoImg != null && Directory.Exists(imgPath))
+                    {
+                        Directory.Delete(imgPath, true);
+                    }
+
+                    if (!Directory.Exists(imgPathUpdate))
+                    {
+                        Directory.CreateDirectory(imgPathUpdate);
+                    }
+
+                    imgPath = Path.Combine(imgPathUpdate, clienteViewModel.LogotipoImg.FileName);
+
+                    using (Stream fileStream = new FileStream(imgPath, FileMode.Create))
+                    {
+                        clienteViewModel.LogotipoImg.CopyTo(fileStream);
+                    }
+
+                    clienteExistent.Logotipo = imgPath;
+                }
+                if(clienteExistent.Name != clienteViewModel.Name)
+                {
+                    clienteExistent.Name = clienteViewModel.Name;
+                }
+                if(clienteExistent.Email != clienteViewModel.Email)
+                {
+                    clienteExistent.Email = clienteViewModel.Email;
+                }
+
+                _clienteService.Edit(clienteExistent);
+
+                return Ok();
+            }
+            catch (DbUpdateException ex)
+            {
+                var innerEx = ex.InnerException;
+                if (innerEx is SqlException sqlEx && sqlEx.Number == 2627)
+                {
+                    return BadRequest(new { error = "SqlUE" });
+                }
+                else
+                {
+                    throw;
+                }
+            }
         }
 
         /// <summary>
@@ -69,34 +151,20 @@ namespace APICadastroClientes.Controllers
         public IActionResult DownloadLogotipoImg(int id)
         {
             var cliente = _clienteService.Get(id);
-            
+
             if (cliente == null)
             {
                 return NotFound($"Cliente não encontrado");
             }
             else if (cliente.Logotipo == null)
             {
-                return NotFound(new { msg = "CsLT" });
+                return NoContent();
             }
 
             byte[] imagemBytes = System.IO.File.ReadAllBytes(cliente.Logotipo);
             var tipoConteudo = MimeTypesMap.GetMimeType(cliente.Logotipo);
 
             return File(imagemBytes, tipoConteudo);
-        }
-
-        [HttpGet]
-        [Route("logotipoUrl/{id}")]
-        public IActionResult GetLogotipoUrl(int id)
-        {
-            var cliente = _clienteService.Get(id);
-
-            if (cliente == null)
-            {
-                return NotFound($"Cliente não encontrado");
-            }
-
-            return Ok(new { logotipoUrl = cliente.Logotipo }); // Supondo que cliente.Logotipo seja a URL do logotipo
         }
 
         /// <summary>
@@ -116,9 +184,10 @@ namespace APICadastroClientes.Controllers
                     return NotFound(); // Cliente não encontrado
                 }
 
-                var imgPath = Path.Combine("Storage", cliente.Logotipo);
+                var imgPath = Path.Combine("Storage", cliente.Name);
+
                 // Excluir a pasta que contém a imagem, se existir
-                if (!string.IsNullOrEmpty(cliente.Logotipo) && Directory.Exists(imgPath))
+                if ((cliente.Logotipo != null || cliente.Logotipo != "") && Directory.Exists(imgPath))
                 {
                     Directory.Delete(imgPath, true);
                 }
