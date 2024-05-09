@@ -3,7 +3,7 @@ import showToastMessage from '../components/Notify';
 
 const api = axios.create({
   baseURL: "https://localhost:7268/api",
-  timeout: 3000
+  timeout: 5000
 });
 
 const logIn = ({ usernameValue, passwordValue}) => {
@@ -79,7 +79,6 @@ const getClient = (id) => {
 
       api.get("/client/get/"+id, config)
         .then((response) => {
-          console.log(response.data);
           resolve(response.data); // Resolva a promessa com os dados da resposta
         })
         .catch((err) => {
@@ -109,22 +108,24 @@ const getLogotipo = (id) => {
 
       api.get(`/client/images/${id}`, config)
         .then((response) => {
-          const byteArray = new Uint8Array(response.data);
-          let binaryString = '';
+          if(response.status == 204 ){
+            resolve(null);
+          } else {
+            const byteArray = new Uint8Array(response.data);
+            let binaryString = '';
 
-          byteArray.forEach((byte) => {
-            binaryString += String.fromCharCode(byte);
-          });
-          const base64Image = btoa(binaryString);
-          resolve(base64Image);
+            byteArray.forEach((byte) => {
+              binaryString += String.fromCharCode(byte);
+            });
+            const base64Image = btoa(binaryString);
+            resolve(base64Image);
+          }
         })
         .catch((err) => {
-          if (err.response.status === 401) {
-            showToastMessage('error', 'Request not authorized');
-          } else if (err.response.status === 404){
+          if (err.response && err.response.status === 401) {
             reject(err.response.status);
-          } else {
-            showToastMessage('error', 'Some unknown error occurred image.');
+          } else if (err.response && err.response.status === 404){
+            reject(err.response.status);
           }
           reject(err);
         });
@@ -167,6 +168,12 @@ const createClient = (formData) => {
                 msg: 'Request not authorized.'
               }
             );
+          } else if (err.response && err.response.status === 400){
+            if (err.response.data.error === "SqlUE" ){
+              reject({ msgType: 'error', msg: 'Email is already being used.'});
+            } else {
+              reject({ msgType: 'error', msg: 'Something is wrong.' });
+            }
           } else {
             reject(
               {
@@ -218,6 +225,65 @@ const deleteClient = (idClient) => {
   });
 };
 
+/**
+ * client creation
+ * @param {formData} formData - data for client creation
+ * @returns 
+ */
+const updateClient = (formData) => {
+  return new Promise((resolve, reject) => {
+    const token = localStorage.getItem('accessToken');
+
+    if (token) {
+      const config = {
+        headers: { Authorization: `Bearer ${token}` },
+        'Content-Type': 'multipart/form-data',
+      };
+
+      api.put("/client/edit", formData, config)
+        .then((response) => {
+          resolve(
+            {
+              msgType: 'success',
+              msg: 'Client update successfully!'
+            }
+          );
+        })
+        .catch((err) => {
+          if (err.response && err.response.status === 401) {
+            reject(
+              {
+                msgType: 'error',
+                msg: 'Request not authorized.'
+              }
+            );
+          } else if (err.response && err.response.status === 400){
+            if (err.response.data.error === "SqlUE" ){
+              reject({ msgType: 'error', msg: 'Email is already being used.'});
+            } else {
+              reject({ msgType: 'error', msg: 'Something is wrong.' });
+            }
+          } else {
+            reject(
+              {
+                msgType: 'error',
+                msg: 'Some unknown error occurred.'
+              }
+            );
+          }
+          
+        });
+    } else {
+      reject(
+        {
+          msgType: 'info',
+          msg: 'Invalid token. Need login.'
+        }
+      );
+    }
+  });
+};
 
 
-export {logIn, getAllClients, getClient,createClient, deleteClient, getLogotipo};
+
+export {logIn, getAllClients, getClient,createClient, deleteClient, getLogotipo, updateClient};
