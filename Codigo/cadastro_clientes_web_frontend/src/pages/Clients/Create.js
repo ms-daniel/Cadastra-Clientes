@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { TextField, Button, Typography, Box } from '@mui/material';
 import Layout from '../../shared/Layout';
-import { createClient } from '../../services/Api';
+import { createClient } from '../../services/ClientActions';
 import { useNavigate } from 'react-router-dom';
 import showToastMessage from '../../components/Notify';
 

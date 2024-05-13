@@ -12,7 +12,7 @@ import '@fontsource/roboto/700.css';
 import Divider from '@mui/material/Divider';
 import Box from '@mui/material/Box';
 import {DataTable} from '../../components/DataTable'
-import {getAllClients, deleteClient} from '../../services/Api'
+import {getAllClients, deleteClient} from '../../services/ClientActions'
 import Button from '@mui/material/Button';
 import PersonIcon from '@mui/icons-material/Person';
 import AddIcon from '@mui/icons-material/Add';
@@ -69,14 +69,12 @@ const Clients = (props) => {
     };
 
     const handleDeleteModal = async (id, name) => {
-        console.log('Editar item com ID:', id);
         setSelectedClientId(id);
         setClientName(name);
         setOpenModal(true);
     };
     
     const handleDelete = async (id) => {
-        console.log('Excluir item com ID:', id);
         if (props.loggedIn) {
             try{
                 if( await deleteClient(id) ){

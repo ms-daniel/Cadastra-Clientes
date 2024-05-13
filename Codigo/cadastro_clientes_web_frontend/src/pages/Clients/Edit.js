@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { TextField, Button, Box, Typography } from '@mui/material';
 import { editClient } from '../../services/Api';
 import Layout from '../../shared/Layout';
-import { getClient, getLogotipo, updateClient } from '../../services/Api';
+import { getClient, getLogotipo, updateClient } from '../../services/ClientActions';
 import { Card, CardContent, CardMedia, styled } from '@mui/material';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import noImage from '../../assets/images/noimage.png';

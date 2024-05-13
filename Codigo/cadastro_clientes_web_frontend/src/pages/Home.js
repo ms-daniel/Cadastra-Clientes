@@ -12,7 +12,7 @@ import HomeIcon from '@mui/icons-material/Home';
 import Divider from '@mui/material/Divider';
 import Box from '@mui/material/Box';
 import { DataTableHome } from '../components/DataTable'
-import {getAllClients} from '../services/Api'
+import {getAllClients} from '../services/ClientActions'
 import Button from '@mui/material/Button';
 import Layout from '../shared/Layout';
 
