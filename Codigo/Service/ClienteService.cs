@@ -21,6 +21,11 @@ namespace Service
             _logradouroService = logradouroService;
         }
 
+        public int CountAll()
+        {
+            return _context.Clientes.Count();
+        }
+
         public int Create(Cliente cliente)
         {
             _context.Add(cliente);
@@ -48,13 +53,22 @@ namespace Service
             return _context.Clientes.Find(idCliente);
         }
 
-        public IEnumerable<ClienteDTO> GetAll(int pageNumber, int pageQuantity)
+        public IEnumerable<ClienteDTO> GetAll(int pageNumber, int pageQuantity, char order)
         {
+            IQueryable<Cliente> query = _context.Clientes;
+
+            query = order switch
+            {
+                'C' => query.OrderBy(cliente => cliente.Id),
+                'D' => query.OrderByDescending(cliente => cliente.Id),
+                _ => query.OrderBy(cliente => cliente.Id),
+            };
+
             // Obter os clientes paginados
-            var clientes = _context.Clientes
+            var clientes = query
                 .Skip((pageNumber - 1) * pageQuantity)
                 .Take(pageQuantity)
-                .ToList(); // Materializar os dados do banco de dados
+                .ToList();
 
             // Mapear os clientes para DTOs
             var clientesDTO = clientes.Select(cliente =>
@@ -62,7 +76,6 @@ namespace Service
                 // Contar o número de logradouros para este cliente
                 int numLogradouros = _logradouroService.Count(cliente.Id);
 
-                // Criar o DTO do cliente
                 return new ClienteDTO
                 {
                     Id = cliente.Id,
@@ -73,7 +86,9 @@ namespace Service
                 };
             });
 
-            return clientesDTO.ToList(); // Converte para lista
+
+
+            return clientesDTO.ToList();
         }
 
     }

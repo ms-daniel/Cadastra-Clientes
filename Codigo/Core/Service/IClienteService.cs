@@ -13,7 +13,8 @@ namespace Core.Service
         void Edit(Cliente cliente);
         void Delete(int idCliente);
         Cliente? Get(int idCliente);
+        int CountAll();
 
-        IEnumerable<ClienteDTO> GetAll(int pageNumber, int pageQuantity);
+        IEnumerable<ClienteDTO> GetAll(int pageNumber, int pageQuantity, char order);
     }
 }

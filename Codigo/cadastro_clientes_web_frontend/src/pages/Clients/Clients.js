@@ -11,7 +11,7 @@ import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import Divider from '@mui/material/Divider';
 import Box from '@mui/material/Box';
-import DataTable from '../../components/DataTable'
+import {DataTable} from '../../components/DataTable'
 import {getAllClients, deleteClient} from '../../services/Api'
 import Button from '@mui/material/Button';
 import PersonIcon from '@mui/icons-material/Person';
@@ -64,8 +64,6 @@ const Clients = (props) => {
         }
     ];
 
-    const [clients, setClients] = useState([]);
-
     const handleEdit = async (id) => {
         navigate(`/clients/edit/${id}`);
     };
@@ -101,23 +99,19 @@ const Clients = (props) => {
         setSelectedClientId(null);
     };
 
-    const fetchclients = async () => {
+    const fetchclients = async (pgNumber, pgQt, orderby) => {
         try {
-            const data = await getAllClients({ pageNumber: 1, pageQuantity: 5 });
-            setClients(data);
+            const data = await getAllClients({ pageNumber: pgNumber, pageQuantity: pgQt, order: orderby });
+            return(data);
         } catch (error) {
             console.error('Error fetching clients:', error);
             //showToastMessage('error', 'Failed to fetch clients.');
+            return null;
         }
     };
 
     useEffect(() => {
-        if (props.loggedIn) {
-            /*if(location.state.type != null){
-                console.log('tem noticfcicaoca');
-            }*/
-            fetchclients();
-        } else {
+        if (!props.loggedIn) {
             navigate('/login');
         }
     }, [props.loggedIn, navigate]);
@@ -142,7 +136,7 @@ const Clients = (props) => {
             </div>
 
             <div className='container px-0 my-3 d-flex flex-column'>
-                <DataTable cols={colClients} rows={clients} />
+                <DataTable cols={colClients} fetchData = {fetchclients} />
             </div>
 
             {selectedClientId && (

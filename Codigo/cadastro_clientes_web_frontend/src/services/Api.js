@@ -34,14 +34,14 @@ const logIn = ({ usernameValue, passwordValue}) => {
  * @param {number} pageQuantity - number of lines per page
  * @returns 
  */
-const getAllClients = ({ pageNumber, pageQuantity }) => {
+const getAllClients = ({ pageNumber, pageQuantity, order }) => {
   return new Promise((resolve, reject) => {
     const token = localStorage.getItem('accessToken');
 
     if (token) {
       const config = {
         headers: { Authorization: `Bearer ${token}` },
-        params: { pageNumber, pageQuantity }
+        params: { pageNumber, pageQuantity , order}
       };
 
       api.get("/client/getall", config)

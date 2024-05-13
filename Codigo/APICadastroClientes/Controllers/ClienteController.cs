@@ -226,15 +226,25 @@ namespace APICadastroClientes.Controllers
         /// <summary>
         /// Get all clients from database
         /// </summary>
+        /// <param name="pageNumber"> number of page</param>
+        /// <param name="pageQuantity">how much clients</param>
+        /// <param name="order">c for crescent and d for descrescent</param>
         /// <returns></returns>
         [HttpGet]
         [Route("getall")]
-        public IActionResult GetAll(int pageNumber, int pageQuantity)
+        public IActionResult GetAll(int pageNumber, int pageQuantity, char order)
         {
-            var clientes = _clienteService.GetAll(pageNumber, pageQuantity);
+            var clientes = _clienteService.GetAll(pageNumber, pageQuantity, order);
             var clienteList = _mapper.Map<List<ClientGetViewModel>>(clientes);
-            
-            return Ok(clienteList);
+            var total = _clienteService.CountAll();
+
+            var response = new
+            {
+                Clientes = clienteList,
+                Total = total
+            };
+
+            return Ok(response);
         }
     }
 }

@@ -41,7 +41,7 @@ const ClientCreate = () => {
             showToastMessage(error.msgType, error.msg);
         });
     } catch (error) {
-        console.error('Erro ao criar a entidade:', error);
+        console.error('Error creating entity:', error);
         
     }
   };

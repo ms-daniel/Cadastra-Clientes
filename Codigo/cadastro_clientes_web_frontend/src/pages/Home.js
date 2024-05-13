@@ -11,7 +11,7 @@ import '@fontsource/roboto/700.css';
 import HomeIcon from '@mui/icons-material/Home';
 import Divider from '@mui/material/Divider';
 import Box from '@mui/material/Box';
-import DataTable from '../components/DataTable'
+import { DataTableHome } from '../components/DataTable'
 import {getAllClients} from '../services/Api'
 import Button from '@mui/material/Button';
 import Layout from '../shared/Layout';
@@ -32,8 +32,8 @@ const Home = (props) => {
     useEffect(() => {
         const fetchClients = async () => {
             try {
-                const data = await getAllClients({ pageNumber: 1, pageQuantity: 5 });
-                setClients(data);
+                const data = await getAllClients({ pageNumber: 1, pageQuantity: 5 , order: 'D'});
+                setClients(data.clientes);
             } catch (error) {
                 console.error('Error fetching clients:', error);
                 //showToastMessage('error', 'Failed to fetch clients.');
@@ -73,7 +73,7 @@ const Home = (props) => {
                     </div>
                 </div>
 
-                <DataTable cols={colClients} rows={clients} />
+                <DataTableHome cols={colClients} rows={clients} />
             </div>
 
             <Divider flexItem sx={{borderColor: 'black'}}/>
