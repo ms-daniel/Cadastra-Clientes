@@ -11,8 +11,8 @@ import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import Divider from '@mui/material/Divider';
 import Box from '@mui/material/Box';
-import {DataTable} from '../../components/DataTable'
-import {getAllClients, deleteClient} from '../../services/ClientActions'
+import {DataTable} from '../../components/DataTable';
+import {getAllClients, deleteClient} from '../../services/ClientActions';
 import Button from '@mui/material/Button';
 import PersonIcon from '@mui/icons-material/Person';
 import AddIcon from '@mui/icons-material/Add';
@@ -28,74 +28,13 @@ import { ModalDelete } from '../../components/Modals';
 const Clients = (props) => {
     const navigate = useNavigate();
     const location = useLocation();
-    const [selectedClientId, setSelectedClientId] = useState(null);
-    const [clientName, setClientName] = useState('');
-    const [openModal, setOpenModal] = useState(false);
 
     const colClients = [
         { field: 'id', headerName: 'ID', width: 70 , flex: 1},
         { field: 'name', headerName: 'Name', width: 150, flex: 2 },
         { field: 'email', headerName: 'Email', width: 200, flex: 3},
-        { field: 'addresses', headerName: 'Addresses', width: 90, flex: 1},
-        { 
-            field: 'actions',
-            headerName: 'Actions',
-            width: 250,
-            flex: 2 ,
-            sortable: false,
-            renderCell: (params) => (
-            <div>
-                <IconButton
-                aria-label="edit"
-                onClick={() => handleEdit(params.row.id)}
-                sx={{ color: blue['A700'] }} 
-                >
-                <EditIcon />
-                </IconButton>
-                <IconButton
-                aria-label="delete"
-                onClick={() => handleDeleteModal(params.row.id, params.row.name)}
-                sx={{ color: red['A700'] }}
-                >
-                <DeleteIcon />
-                </IconButton>
-            </div>
-            ),
-        }
+        { field: 'addresses', headerName: 'Addresses', width: 90, flex: 1}
     ];
-
-    const handleEdit = async (id) => {
-        navigate(`/clients/edit/${id}`);
-    };
-
-    const handleDeleteModal = async (id, name) => {
-        setSelectedClientId(id);
-        setClientName(name);
-        setOpenModal(true);
-    };
-    
-    const handleDelete = async (id) => {
-        if (props.loggedIn) {
-            try{
-                if( await deleteClient(id) ){
-                    console.log('Client deleted successfully.');
-                    fetchclients();
-                } else {
-                    console.log('Error when trying to delete client.');
-                }
-            } catch (error) {
-                console.log('Error when trying to request delete client.');
-            }
-            
-        } else {
-            navigate('/login');
-        }
-    };
-
-    const handleCloseModal = () => {
-        setOpenModal(false);
-        setSelectedClientId(null);
-    };
 
     const fetchclients = async (pgNumber, pgQt, orderby) => {
         try {
@@ -134,21 +73,9 @@ const Clients = (props) => {
             </div>
 
             <div className='container px-0 my-3 d-flex flex-column'>
-                <DataTable cols={colClients} fetchData = {fetchclients} />
+                <DataTable cols={colClients} fetchData = {fetchclients} deleteEntity = {deleteClient} />
             </div>
 
-            {selectedClientId && (
-                <ModalDelete
-                    open={openModal} // Passando estado para controlar a abertura do modal
-                    onClose={handleCloseModal}
-                    onEdit={() => handleEdit(selectedClientId)}
-                    onDelete={() => {
-                        handleDelete(selectedClientId);
-                        handleCloseModal(); // Fechar o modal após excluir
-                    }}
-                    clientName = {clientName}
-                />
-            )}
         </Layout>
     );
 };
