@@ -45,8 +45,7 @@ const Addresses = (props) => {
             const data = await getAllAddresses({ pageNumber: pgNumber, pageQuantity: pgQt, order: orderby });
             return(data);
         } catch (error) {
-            console.error('Error fetching clients:', error);
-            //showToastMessage('error', 'Failed to fetch clients.');
+            console.error('Error fetching addresses:', error);
             return null;
         }
     };
@@ -60,7 +59,7 @@ const Addresses = (props) => {
 
     return(
         <Layout>
-            <div className='d-flex flex-row align-items-center mt-3'>
+            <div className='d-flex flex-md-row flex-sm-column flex-column align-items-start align-items-md-center mt-3'>
                 <div className='col text-start'>
                     <Typography variant="h3" className='d-flex align-items-center'>
                         Addresses <PersonIcon sx={{ fontSize: 50 }} />
@@ -70,8 +69,8 @@ const Addresses = (props) => {
                     </Typography>
                 </div>
                 <div className='col text-end'>
-                    <Button variant="contained" size="large" href="/clients/create"> 
-                        <AddIcon /> New Address
+                    <Button variant="contained" size="large" href="/clients"> 
+                        New Address ?
                     </Button>
                 </div>
             </div>

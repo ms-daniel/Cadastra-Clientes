@@ -175,7 +175,7 @@ export function DataTableAddress({cols, fetchData, deleteEntity}) {
           </IconButton>
           <IconButton
             aria-label="delete"
-            onClick={() => handleDeleteModal(params.row.id, params.row.name)}
+            onClick={() => handleDeleteModal(params.row.id, params.row.rua)}
             sx={{ color: red['A700'] }}
           >
           <DeleteIcon />
@@ -207,6 +207,7 @@ export function DataTableAddress({cols, fetchData, deleteEntity}) {
 
   const handleDelete = async (id) => {
     try{
+      console.log('id: ', id);
         if( await deleteEntity(id) ){
             console.log('Address deleted successfully.');
             updateRows();
@@ -273,12 +274,12 @@ export function DataTableAddress({cols, fetchData, deleteEntity}) {
 
     {selectedAddressId && (
       <ModalDelete
-          open={openModal} // Passando estado para controlar a abertura do modal
+          open={openModal} 
           onClose={handleCloseModal}
           onEdit={() => handleEdit(selectedAddressId)}
           onDelete={() => {
               handleDelete(selectedAddressId);
-              handleCloseModal(); // Fechar o modal após excluir
+              handleCloseModal();
           }}
           clientName = {addressName}
       />

@@ -1,5 +1,5 @@
 import api from './Api';
-
+import showToastMessage from '../components/Notify';
 
 /**
  * requests list of addresses
@@ -130,23 +130,27 @@ const deleteAddress = (idAd) => {
 
     if (token) {
         const config = {
-        headers: { Authorization: `Bearer ${token}` },
-        params: { id: idAd }
-    };
+            headers: { Authorization: `Bearer ${token}` },
+            params: { id: idAd }
+        };
 
-    api.delete("/logradouro/delete/" + idAd, config)
-    .then((response) => {
-        showToastMessage('success', 'Address deleted successfully');
-        resolve(true);
-    })
-    .catch((err) => {
-        if (err.response && err.response.status === 401) {
-        showToastMessage('error', 'Request not authorized');
-        } else {
-        showToastMessage('error', 'Error when trying to delete address.');
-        }
-        reject(err);
-    });
+        console.log('entrou aqui no delete');
+
+        api.delete("/logradouro/delete/" + idAd, config)
+        .then((response) => {
+            showToastMessage('success', 'Address deleted successfully');
+            resolve(true);
+        })
+        .catch((err) => {
+            if (err.response && err.response.status === 401) {
+                showToastMessage('error', 'Request not authorized');
+                
+            } else {
+                showToastMessage('error', 'Error when trying to delete address.');
+                console.log('erro: ', err);
+            }
+            reject(err);
+        });
     } else {
         showToastMessage('info', 'Invalid token.');
         reject(new Error('Invalid token'));
