@@ -56,7 +56,7 @@ const Clients = (props) => {
 
     return(
         <Layout>
-            <div className='d-flex flex-row align-items-center mt-3'>
+            <div className='d-flex flex-md-row flex-sm-column flex-column align-items-start align-items-md-center mt-3'>
                 <div className='col text-start'>
                     <Typography variant="h3" className='d-flex align-items-center'>
                         Clients <PersonIcon sx={{ fontSize: 50 }} />
