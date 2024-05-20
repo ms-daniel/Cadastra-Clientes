@@ -111,7 +111,7 @@ const Home = (props) => {
                         </Typography>
                     </div>
                     <div className='col text-end'>
-                        <Button variant="contained" size="large" href="/clients">See All</Button>
+                        <Button variant="contained" size="large" href="/addresses">See All</Button>
                     </div>
                 </div>
 
