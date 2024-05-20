@@ -237,13 +237,13 @@ export function DataTableAddress({cols, fetchData, deleteEntity}) {
       let newData = await fetchData(page + 1, 5, 'C');
       
       if (newData != null) {
-        setRows(newData.clientes);
+        setRows(newData.addresses);
         setTotalRow(newData.total);
   
         // Armazene os novos dados em cache
         setCachedData(prevCachedData => ({
           ...prevCachedData,
-          [page]: newData.clientes
+          [page]: newData.addresses
         }));
       }
     }
@@ -271,7 +271,7 @@ export function DataTableAddress({cols, fetchData, deleteEntity}) {
       />
     </div>
 
-    {selectedClientId && (
+    {selectedAddressId && (
       <ModalDelete
           open={openModal} // Passando estado para controlar a abertura do modal
           onClose={handleCloseModal}
