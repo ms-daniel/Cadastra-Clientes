@@ -11,8 +11,9 @@ import '@fontsource/roboto/700.css';
 import HomeIcon from '@mui/icons-material/Home';
 import Divider from '@mui/material/Divider';
 import Box from '@mui/material/Box';
-import { DataTableHome } from '../components/DataTable'
-import {getAllClients} from '../services/ClientActions'
+import { DataTableHome } from '../components/DataTable';
+import {getAllClients} from '../services/ClientActions';
+import {getAllAddresses} from '../services/AddressesActions';
 import Button from '@mui/material/Button';
 import Layout from '../shared/Layout';
 
@@ -27,7 +28,18 @@ const Home = (props) => {
         { field: 'email', headerName: 'Email', width: 250 }
     ];
 
+    const colAddresses = [
+        { field: 'id', headerName: 'ID', width: 70 },
+        { field: 'clienteId', headerName: 'Client_ID', width: 70 },
+        { field: 'rua', headerName: 'Street', width: 250 },
+        { field: 'numero', headerName: 'Number', width: 70 },
+        { field: 'cidade', headerName: 'City', width: 150 },
+        { field: 'estado', headerName: 'State', width: 70 }
+    ];
+
     const [clients, setClients] = useState([]);
+
+    const [addresses, setAddresses] = useState([]);
 
     useEffect(() => {
         const fetchClients = async () => {
@@ -36,12 +48,22 @@ const Home = (props) => {
                 setClients(data.clientes);
             } catch (error) {
                 console.error('Error fetching clients:', error);
-                //showToastMessage('error', 'Failed to fetch clients.');
+            }
+        };
+
+        const fetchAddresses = async () => {
+            try {
+                const data = await getAllAddresses({ pageNumber: 1, pageQuantity: 5 , order: 'D'});
+                setAddresses(data.addresses);
+                console.log(data.addresses);
+            } catch (error) {
+                console.error('Error fetching addresses:', error);
             }
         };
 
         if (props.loggedIn) {
             fetchClients();
+            fetchAddresses();
         } else {
             navigate('/login');
         }
@@ -78,14 +100,23 @@ const Home = (props) => {
 
             <Divider flexItem sx={{borderColor: 'black'}}/>
 
-            <Box sx={{ textAlign: 'left' }} className='container px-0 my-3'>
-                <Typography variant="h5">
-                    <b>Addresses</b>
-                </Typography>
-                <Typography variant="subtitle1" gutterBottom>
-                    See the last 5 addresses
-                </Typography>
-            </Box>
+            <div className='container px-0 my-3 d-flex flex-column'>
+                <div className='d-flex flex-row align-items-center'>
+                    <div className='col text-start'>
+                        <Typography variant="h5" ml={0}>
+                            <b>Addresses</b>
+                        </Typography>
+                        <Typography variant="subtitle1" gutterBottom>
+                            See the last 5 addresses
+                        </Typography>
+                    </div>
+                    <div className='col text-end'>
+                        <Button variant="contained" size="large" href="/clients">See All</Button>
+                    </div>
+                </div>
+
+                <DataTableHome cols={colAddresses} rows={addresses} />
+            </div>
         </Layout>
     );
 };
