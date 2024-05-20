@@ -26,7 +26,7 @@ const ModalDelete = ({ open, onClose, onDelete, clientName }) => {
             aria-describedby="modal-description"
         >
             <Box sx={{ ...style}} className='flex-column justify-content-center text-center'>
-                <h2 id="modal-title">Delete Client</h2>
+                <h2 id="modal-title">Delete D:</h2>
                 <p id="modal-description">
                     Are you sure you want to delete <b>{clientName}</b>?
                 </p>
