@@ -44,7 +44,7 @@ namespace APICadastroClientes.Controllers
         /// </summary>
         /// <param name="id">address id</param>
         /// <returns></returns>
-        [HttpPost]
+        [HttpDelete]
         [Route("delete/{id}")]
         public IActionResult Delete(int id)
         {
