@@ -1,4 +1,5 @@
 ﻿using Core;
+using Core.DTO;
 using Core.Service;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -44,11 +45,6 @@ namespace Service
             return _context.Logradouros.Find(idLogradouro);
         }
 
-        public IEnumerable<Logradouro> GetAll()
-        {
-            return _context.Logradouros.AsNoTracking();
-        }
-
         public IEnumerable<Logradouro> GetByClient(int idClient)
         {
             var query = _context.Logradouros.Where(p => p.ClienteId == idClient).AsNoTracking();
@@ -59,6 +55,32 @@ namespace Service
         public int Count(int idClient)
         {
             return _context.Logradouros.AsNoTracking().Count(a => a.ClienteId == idClient);
+        }
+
+        public int CountAll()
+        {
+            return _context.Logradouros.Count();
+        }
+
+        public IEnumerable<Logradouro> GetAll(int pageNumber, int pageQuantity, char order)
+        {
+            IQueryable<Logradouro> query = _context.Logradouros;
+
+            query = order switch
+            {
+                'C' => query.OrderBy(logra => logra.Id),
+                'D' => query.OrderByDescending(logra => logra.Id),
+                _ => query.OrderBy(logra => logra.Id),
+            };
+
+            // Obter os clientes paginados
+            var logras = query
+                .Skip((pageNumber - 1) * pageQuantity)
+                .Take(pageQuantity)
+                .ToList();
+
+
+            return logras;
         }
     }
 }

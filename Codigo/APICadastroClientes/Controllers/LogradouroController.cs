@@ -75,17 +75,27 @@ namespace APICadastroClientes.Controllers
         }
 
         /// <summary>
-        /// Get all clients from database
+        /// Get all logradouros from database
         /// </summary>
+        /// <param name="pageNumber"> number of page</param>
+        /// <param name="pageQuantity">how much clients</param>
+        /// <param name="order">c for crescent and d for descrescent</param>
         /// <returns></returns>
         [HttpGet]
         [Route("getall")]
-        public IActionResult GetAll()
+        public IActionResult GetAll(int pageNumber, int pageQuantity, char order)
         {
-            var logradouros = _logradouroService.GetAll();
-            var logradouroList = _mapper.Map<List<LogradouroViewModel>>(logradouros);
+            var logra = _logradouroService.GetAll(pageNumber, pageQuantity, order);
+            var lograList = _mapper.Map<List<LogradouroViewModel>>(logra);
+            var total = _logradouroService.CountAll();
 
-            return Ok(logradouroList);
+            var response = new
+            {
+                addresses = lograList,
+                Total = total
+            };
+
+            return Ok(response);
         }
 
 

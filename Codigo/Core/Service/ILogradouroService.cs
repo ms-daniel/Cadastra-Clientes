@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Core.DTO;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,8 +14,11 @@ namespace Core.Service
         void Delete(int idLogradouro);
         Logradouro? Get(int idLogradouro);
         IEnumerable<Logradouro> GetByClient(int idClient);
-        IEnumerable<Logradouro> GetAll();
 
         int Count(int idClient);
+
+        int CountAll();
+
+        IEnumerable<Logradouro> GetAll(int pageNumber, int pageQuantity, char order);
     }
 }

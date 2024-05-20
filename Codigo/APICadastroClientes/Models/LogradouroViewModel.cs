@@ -2,6 +2,7 @@
 {
     public class LogradouroViewModel
     {
+        public int Id { get; set; }
         public int ClienteId { get; set; }
 
         public string Rua { get; set; }
