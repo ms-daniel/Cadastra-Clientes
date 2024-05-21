@@ -7,17 +7,25 @@ import showToastMessage from '../components/Notify';
  * @param {number} pageQuantity - number of lines per page
  * @returns 
  */
-const getAllAddresses = ({ pageNumber, pageQuantity, order }) => {
+const getAllAddresses = ({ pageNumber, pageQuantity, order, clientId = null }) => {
     return new Promise((resolve, reject) => {
       const token = localStorage.getItem('accessToken');
+
+      let url = "getall";
+
+      if(clientId != null){
+        url = "getbyclient/" + clientId;
+      }
   
+      console.log('url aqui: ', clientId)
+
       if (token) {
         const config = {
           headers: { Authorization: `Bearer ${token}` },
-          params: { pageNumber, pageQuantity , order}
+          params: { pageNumber, pageQuantity , order, clientId}
         };
   
-        api.get("/logradouro/getall", config)
+        api.get("/logradouro/" + url, config)
           .then((response) => {
             resolve(response.data); // Resolva a promessa com os dados da resposta
           })
@@ -76,85 +84,85 @@ const getAddress = (id) => {
  */
 const createAddress = (formData) => {
     return new Promise((resolve, reject) => {
-    const token = localStorage.getItem('accessToken');
+        const token = localStorage.getItem('accessToken');
 
-    if (token) {
-        const config = {
-        headers: { Authorization: `Bearer ${token}` },
-        'Content-Type': 'multipart/form-data',
-    };
+        if (token) {
+            const config = {
+            headers: { Authorization: `Bearer ${token}` },
+            'Content-Type': 'multipart/form-data',
+        };
 
-    api.post("/logradouro/create", formData, config)
-    .then((response) => {
-        resolve(
-        {
-            msgType: 'success',
-            msg: 'Address created successfully!'
-        }
-        );
-    })
-    .catch((err) => {
-        if (err.response && err.response.status === 401) {
-        reject(
+        api.post("/logradouro/create", formData, config)
+        .then((response) => {
+            resolve(
             {
-            msgType: 'error',
-            msg: 'Request not authorized.'
+                msgType: 'success',
+                msg: 'Address created successfully!'
             }
-        );
-        } else if (err.response && err.response.status === 400){
-            reject({ msgType: 'error', msg: 'Something is wrong.' });
+            );
+        })
+        .catch((err) => {
+            if (err.response && err.response.status === 401) {
+            reject(
+                {
+                msgType: 'error',
+                msg: 'Request not authorized.'
+                }
+            );
+            } else if (err.response && err.response.status === 400){
+                reject({ msgType: 'error', msg: 'Something is wrong.' });
+            } else {
+            reject(
+                {
+                msgType: 'error',
+                msg: 'Some unknown error occurred.'
+                }
+            );
+            }
+            
+        });
         } else {
-        reject(
+            reject(
             {
-            msgType: 'error',
-            msg: 'Some unknown error occurred.'
+                msgType: 'info',
+                msg: 'Invalid token. Need login.'
             }
-        );
+            );
         }
-        
-    });
-    } else {
-        reject(
-        {
-            msgType: 'info',
-            msg: 'Invalid token. Need login.'
-        }
-        );
-    }
     });
 };
 
 const deleteAddress = (idAd) => {
     return new Promise((resolve, reject) => {
-    const token = localStorage.getItem('accessToken');
+        const token = localStorage.getItem('accessToken');
 
-    if (token) {
-        const config = {
-            headers: { Authorization: `Bearer ${token}` },
-            params: { id: idAd }
-        };
+        if (token) {
+            const config = {
+                headers: { Authorization: `Bearer ${token}` },
+                params: { id: idAd }
+            };
 
-        console.log('entrou aqui no delete');
+            console.log('entrou aqui no delete');
 
-        api.delete("/logradouro/delete/" + idAd, config)
-        .then((response) => {
-            showToastMessage('success', 'Address deleted successfully');
-            resolve(true);
-        })
-        .catch((err) => {
-            if (err.response && err.response.status === 401) {
-                showToastMessage('error', 'Request not authorized');
-                
-            } else {
-                showToastMessage('error', 'Error when trying to delete address.');
-                console.log('erro: ', err);
-            }
-            reject(err);
-        });
-    } else {
-        showToastMessage('info', 'Invalid token.');
-        reject(new Error('Invalid token'));
-    }
+            api.delete("/logradouro/delete/" + idAd, config)
+            .then((response) => {
+                showToastMessage('success', 'Address deleted successfully');
+                resolve(true);
+            })
+            .catch((err) => {
+                if (err.response && err.response.status === 401) {
+                    showToastMessage('error', 'Request not authorized');
+                    
+                } else {
+                    showToastMessage('error', 'Error when trying to delete address.');
+                    console.log('erro: ', err);
+                }
+                reject(err);
+            });
+        } else {
+            showToastMessage('info', 'Invalid token.');
+            reject(new Error('Invalid token'));
+        }
     });
 };
 
@@ -165,50 +173,55 @@ const deleteAddress = (idAd) => {
  */
 const updateAddress = (formData) => {
     return new Promise((resolve, reject) => {
-    const token = localStorage.getItem('accessToken');
+        const token = localStorage.getItem('accessToken');
 
-    if (token) {
-        const config = {
-        headers: { Authorization: `Bearer ${token}` },
-        'Content-Type': 'multipart/form-data',
-        };
+        if (token) {
+            const config = {
+                headers: { Authorization: `Bearer ${token}` },
+                'Content-Type': 'multipart/form-data',
+            };
 
-        api.put("/logradouro/edit", formData, config)
-        .then((response) => {
-            resolve(
-                {
-                    msgType: 'success',
-                    msg: 'Address update successfully!'
+            api.put("/logradouro/edit", formData, config)
+            .then((response) => {
+                resolve(
+                    {
+                        msgType: 'success',
+                        msg: 'Address update successfully!'
+                    }
+                );
+            })
+            .catch((err) => {
+                if (err.response && err.response.status === 401) {
+                    reject(
+                        {
+                        msgType: 'error',
+                        msg: 'Request not authorized.'
+                        }
+                    );
+                } else if (err.response && err.response.status === 400){
+                    reject(
+                        { 
+                            msgType: 'error',
+                            msg: 'Something is wrong.' 
+                        }
+                    );
+                } else {
+                    reject(
+                        {
+                        msgType: 'error',
+                        msg: 'Some unknown error occurred.'
+                        }
+                    );
                 }
-            );
-        })
-        .catch((err) => {
-            if (err.response && err.response.status === 401) {
-                reject(
-                    {
-                    msgType: 'error',
-                    msg: 'Request not authorized.'
-                    }
-                );
-            } else if (err.response && err.response.status === 400){
-                reject({ msgType: 'error', msg: 'Something is wrong.' });
-            } else {
-                reject(
-                    {
-                    msgType: 'error',
-                    msg: 'Some unknown error occurred.'
-                    }
-                );
+            });
+        } else {
+            reject(
+            {
+                msgType: 'info',
+                msg: 'Invalid token. Need login.'
             }
-        });
-    } else {
-        reject(
-        {
-            msgType: 'info',
-            msg: 'Invalid token. Need login.'
+            );
         }
-        );
-    }
     });
 };
 
