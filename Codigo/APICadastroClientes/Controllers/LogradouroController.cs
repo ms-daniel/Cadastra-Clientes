@@ -150,9 +150,9 @@ namespace APICadastroClientes.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("getbyclient/{id}")]
-        public IActionResult GetByClient(int clientId)
+        public IActionResult GetByClient(int pageNumber, int pageQuantity, char order, int clientId)
         {
-            var logra = _logradouroService.GetByClient(clientId);
+            var logra = _logradouroService.GetByClient(pageNumber, pageQuantity, order, clientId);
             var lograList = _mapper.Map<List<LogradouroViewModel>>(logra);
             var total = _logradouroService.Count(clientId);
 

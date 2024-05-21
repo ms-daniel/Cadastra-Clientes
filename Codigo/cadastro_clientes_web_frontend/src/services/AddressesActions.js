@@ -13,8 +13,9 @@ const getAllAddresses = ({ pageNumber, pageQuantity, order, clientId = null }) =
 
       let url = "getall";
 
-      if(clientId != null){
+      if(clientId){
         url = "getbyclient/" + clientId;
+        console.log('entrou aqui')
       }
 
       if (token) {

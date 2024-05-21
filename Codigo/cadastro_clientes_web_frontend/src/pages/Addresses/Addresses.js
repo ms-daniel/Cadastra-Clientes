@@ -116,7 +116,7 @@ const Addresses = (props) => {
             </div>
 
             <div className='container px-0 my-3 d-flex flex-column'>
-                <DataTableAddress cols={colAddresses} fetchData = {fetchAddresses} deleteEntity = {deleteAddress} />
+                <DataTableAddress cols={colAddresses} fetchData = {fetchAddresses} deleteEntity = {deleteAddress}/>
             </div>
 
         </Layout>

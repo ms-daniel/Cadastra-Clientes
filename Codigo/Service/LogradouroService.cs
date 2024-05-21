@@ -45,11 +45,28 @@ namespace Service
             return _context.Logradouros.Find(idLogradouro);
         }
 
-        public IEnumerable<Logradouro> GetByClient(int idClient)
+        public IEnumerable<Logradouro> GetByClient(int pageNumber, int pageQuantity, char order, int idClient)
         {
-            var query = _context.Logradouros.Where(p => p.ClienteId == idClient).AsNoTracking();
+            //var query = _context.Logradouros.Where(p => p.ClienteId == idClient).AsNoTracking();
 
-            return query;
+            IQueryable<Logradouro> query = _context.Logradouros;
+
+            query = order switch
+            {
+                'C' => query.OrderBy(logra => logra.Id),
+                'D' => query.OrderByDescending(logra => logra.Id),
+                _ => query.OrderBy(logra => logra.Id),
+            };
+
+            // Obter os clientes paginados
+            var logras = query
+                .AsNoTracking()
+                .Where(p => p.ClienteId == idClient)
+                .Skip((pageNumber - 1) * pageQuantity)
+                .Take(pageQuantity)
+                .ToList();
+
+            return logras;
         }
 
         public int Count(int idClient)
@@ -75,6 +92,7 @@ namespace Service
 
             // Obter os clientes paginados
             var logras = query
+                .AsNoTracking()
                 .Skip((pageNumber - 1) * pageQuantity)
                 .Take(pageQuantity)
                 .ToList();

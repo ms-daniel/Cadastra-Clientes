@@ -13,7 +13,7 @@ namespace Core.Service
         void Edit(Logradouro logradouro);
         void Delete(int idLogradouro);
         Logradouro? Get(int idLogradouro);
-        IEnumerable<Logradouro> GetByClient(int idClient);
+        IEnumerable<Logradouro> GetByClient(int pageNumber, int pageQuantity, char order, int idClient);
 
         int Count(int idClient);
 

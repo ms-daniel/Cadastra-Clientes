@@ -241,7 +241,7 @@ export function DataTableAddress({cols, fetchData, deleteEntity}) {
       setRows(cachedData[page]);
     } else {
       let newData = await fetchData(page + 1, 5, 'C');
-      
+
       if (newData != null) {
         setRows(newData.addresses);
         setTotalRow(newData.total);
