@@ -5,6 +5,8 @@ import { ToastContainer } from 'react-toastify';
 import Clients from './pages/Clients/Clients';
 import ClientCreate from './pages/Clients/Create';
 import ClientEdit from './pages/Clients/Edit';
+import Addresses from './pages/Addresses/Addresses';
+import AddressEdit from './pages/Addresses/Edit';
 import './App.css';
 import React, { useState } from 'react';
 
@@ -23,11 +25,16 @@ function App() {
           <Route path="/clients/create" element={<ClientCreate loggedIn={loggedIn} setLoggedIn={setLoggedIn}/>} />
           <Route path="/clients/edit/:id" element={<ClientEdit loggedIn={loggedIn} setLoggedIn={setLoggedIn}/>} />
 
+          <Route path="/addresses" element={<Addresses loggedIn={loggedIn} setLoggedIn={setLoggedIn}/>} />
+          <Route path="/addresses/:id" element={<Addresses loggedIn={loggedIn} setLoggedIn={setLoggedIn}/>} />
+          <Route path="/addresses/edit/:id" element={<AddressEdit loggedIn={loggedIn} setLoggedIn={setLoggedIn}/>} />
+
           <Route path="/home" element={<Home loggedIn={loggedIn} setLoggedIn={setLoggedIn} />}/>
         </Routes>
       </BrowserRouter>
     </div>
   )
 }
+//
 
 export default App

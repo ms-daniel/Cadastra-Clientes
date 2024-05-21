@@ -28,7 +28,7 @@ const ClientEdit = (props) => {
     const [logotipoImg, setLogotipoImg] = useState(null);
     const [logoView, setLogoView] = useState(noImage);
 
-    const { id } = useParams(); // Obtém o id do cliente da URL
+    const { id } = useParams();
 
     const handleNameChange = (event) => {
         setName(event.target.value);

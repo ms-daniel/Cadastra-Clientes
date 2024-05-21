@@ -5,6 +5,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { ModalDelete } from './Modals';
 import { red, blue } from '@mui/material/colors';
+import { useNavigate } from 'react-router-dom';
 
 export function DataTableClient({cols, fetchData, deleteEntity}) {
   const [rows, setRows] = useState([]);
@@ -15,6 +16,8 @@ export function DataTableClient({cols, fetchData, deleteEntity}) {
   const [selectedClientId, setSelectedClientId] = useState(null);
   const [clientName, setClientName] = useState('');
   const [openModal, setOpenModal] = useState(false);
+
+  const navigate = useNavigate();
 
   const newColumn = {
     field: 'actions',
@@ -157,6 +160,8 @@ export function DataTableAddress({cols, fetchData, deleteEntity}) {
   const [addressName, setAddressName] = useState('');
   const [openModal, setOpenModal] = useState(false);
 
+  const navigate = useNavigate();
+
   const newColumn = {
     field: 'actions',
     headerName: 'Actions',
@@ -187,7 +192,7 @@ export function DataTableAddress({cols, fetchData, deleteEntity}) {
   cols.push(newColumn);
 
   const handleEdit = async (id) => {
-    navigate(`/logradouro/edit/${id}`);
+    navigate(`/addresses/edit/${id}`);
   };
 
   const handleDeleteModal = async (id, name) => {

@@ -3,6 +3,8 @@ using Core;
 using Core.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using Models;
 
 namespace APICadastroClientes.Controllers
@@ -30,11 +32,48 @@ namespace APICadastroClientes.Controllers
             var cliente = _clienteService.Get(logradouroViewModel.ClienteId);
             if (cliente == null)
             {
-                return NotFound($"Cliente não encontrado");
+                return NotFound($"Address not found");
             }
 
             var logradouro = _mapper.Map<Logradouro>(logradouroViewModel);
             _logradouroService.Create(logradouro);
+
+            return Ok();
+        }
+
+        [HttpPut]
+        [Route("edit")]
+        public IActionResult Edit([FromForm] LogradouroViewModel logradouroViewModel)
+        {
+            try
+            {
+                var logradouro = _logradouroService.Get(logradouroViewModel.Id);
+
+                if (logradouro == null)
+                {
+                    return NotFound(new { error = "Address not found" });
+                }
+
+                logradouroViewModel.ClienteId = (int)logradouro.ClienteId;
+
+                _mapper.Map(logradouroViewModel, logradouro);
+
+                _logradouroService.Edit(logradouro);
+
+                return Ok();
+            }
+            catch (DbUpdateException ex)
+            {
+                var innerEx = ex.InnerException;
+                if (innerEx is SqlException sqlEx && sqlEx.Number == 2627)
+                {
+                    return BadRequest(new { error = "SqlUE" });
+                }
+                else
+                {
+                    throw;
+                }
+            }
 
             return Ok();
         }
@@ -56,7 +95,7 @@ namespace APICadastroClientes.Controllers
         /// <summary>
         /// Get a address
         /// </summary>
-        /// <param name="id"> client id</param>
+        /// <param name="id"> address id</param>
         /// <returns></returns>
         [HttpGet]
         [Route("get/{id}")]
@@ -66,19 +105,23 @@ namespace APICadastroClientes.Controllers
 
             if (logradouro == null)
             {
-                return NotFound($"Nenhum logradouro encontrado");
+                return NotFound($"any address or client were found");
             }
 
-            var logradouroViewModel = _mapper.Map<LogradouroViewModel>(logradouro);
+            var cliente = _clienteService.Get((int)logradouro.ClienteId);
 
-            return Ok(logradouroViewModel);
+            var logradouroSetViewModel = _mapper.Map<LogradouroSetViewModel>(logradouro);
+
+            logradouroSetViewModel.ClienteName = cliente.Name;
+
+            return Ok(logradouroSetViewModel);
         }
 
         /// <summary>
         /// Get all logradouros from database
         /// </summary>
         /// <param name="pageNumber"> number of page</param>
-        /// <param name="pageQuantity">how much clients</param>
+        /// <param name="pageQuantity">how much addresses</param>
         /// <param name="order">c for crescent and d for descrescent</param>
         /// <returns></returns>
         [HttpGet]
@@ -88,6 +131,30 @@ namespace APICadastroClientes.Controllers
             var logra = _logradouroService.GetAll(pageNumber, pageQuantity, order);
             var lograList = _mapper.Map<List<LogradouroViewModel>>(logra);
             var total = _logradouroService.CountAll();
+
+            var response = new
+            {
+                addresses = lograList,
+                Total = total
+            };
+
+            return Ok(response);
+        }
+
+        /// <summary>
+        /// Get all logradouros from database
+        /// </summary>
+        /// <param name="pageNumber"> number of page</param>
+        /// <param name="pageQuantity">how much addresses</param>
+        /// <param name="order">c for crescent and d for descrescent</param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("getbyclient/{id}")]
+        public IActionResult GetByClient(int clientId)
+        {
+            var logra = _logradouroService.GetByClient(clientId);
+            var lograList = _mapper.Map<List<LogradouroViewModel>>(logra);
+            var total = _logradouroService.Count(clientId);
 
             var response = new
             {

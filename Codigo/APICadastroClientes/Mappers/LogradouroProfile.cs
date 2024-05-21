@@ -9,6 +9,7 @@ namespace Mappers
         public LogradouroProfile()
         { 
             CreateMap<LogradouroViewModel, Logradouro>().ReverseMap();
+            CreateMap<LogradouroSetViewModel, Logradouro>().ReverseMap();
         }
     }
 }
