@@ -16,8 +16,6 @@ const getAllAddresses = ({ pageNumber, pageQuantity, order, clientId = null }) =
       if(clientId != null){
         url = "getbyclient/" + clientId;
       }
-  
-      console.log('url aqui: ', clientId)
 
       if (token) {
         const config = {
@@ -31,9 +29,9 @@ const getAllAddresses = ({ pageNumber, pageQuantity, order, clientId = null }) =
           })
           .catch((err) => {
             if (err.response && err.response.status === 401) {
-              showToastMessage('error', 'Request not authorized');
+                showToastMessage('error', 'Request not authorized');
             } else {
-              showToastMessage('error', 'Some unknown error occurred.');
+                showToastMessage('error', 'Some unknown error occurred.');
             }
             reject(err);
           });
@@ -88,39 +86,46 @@ const createAddress = (formData) => {
 
         if (token) {
             const config = {
-            headers: { Authorization: `Bearer ${token}` },
-            'Content-Type': 'multipart/form-data',
-        };
+                headers: { Authorization: `Bearer ${token}` },
+                'Content-Type': 'multipart/form-data'
+            };
 
-        api.post("/logradouro/create", formData, config)
-        .then((response) => {
-            resolve(
-            {
-                msgType: 'success',
-                msg: 'Address created successfully!'
-            }
-            );
-        })
-        .catch((err) => {
-            if (err.response && err.response.status === 401) {
-            reject(
+            api.post("/logradouro/create", formData, config)
+            .then((response) => {
+                resolve(
                 {
-                msgType: 'error',
-                msg: 'Request not authorized.'
+                    msgType: 'success',
+                    msg: 'Address created successfully!'
                 }
-            );
-            } else if (err.response && err.response.status === 400){
-                reject({ msgType: 'error', msg: 'Something is wrong.' });
-            } else {
-            reject(
-                {
-                msgType: 'error',
-                msg: 'Some unknown error occurred.'
+                );
+            })
+            .catch((err) => {
+                if (err.response && err.response.status === 401) {
+                    reject(
+                        {
+                            msgType: 'error',
+                            msg: 'Request not authorized.'
+                        }
+                    );
+                } else if (err.response && err.response.status === 400){
+                    console.log(err.response);
+                    reject(
+                        {
+                            msgType: 'error',
+                            msg: 'Something is wrong.'
+                        }
+                    );
+                } else {
+                    reject
+                    (
+                        {
+                        msgType: 'error',
+                        msg: 'Some unknown error occurred.'
+                        }
+                    );
                 }
-            );
-            }
-            
-        });
+                
+            });
         } else {
             reject(
             {
@@ -142,8 +147,6 @@ const deleteAddress = (idAd) => {
                 params: { id: idAd }
             };
 
-            console.log('entrou aqui no delete');
-
             api.delete("/logradouro/delete/" + idAd, config)
             .then((response) => {
                 showToastMessage('success', 'Address deleted successfully');
@@ -155,7 +158,6 @@ const deleteAddress = (idAd) => {
                     
                 } else {
                     showToastMessage('error', 'Error when trying to delete address.');
-                    console.log('erro: ', err);
                 }
                 reject(err);
             });

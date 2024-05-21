@@ -56,9 +56,11 @@ const getClient = (id) => {
         })
         .catch((err) => {
             if (err.response && err.response.status === 401) {
-            showToastMessage('error', 'Request not authorized');
+                showToastMessage('error', 'Request not authorized');
+            } else if (err.response && err.response.status === 404) {
+                showToastMessage('error', 'Client not found');
             } else {
-            showToastMessage('error', 'Some unknown error occurred.');
+                showToastMessage('error', 'Some unknown error occurred.');
             }
             reject(err);
         });
@@ -116,55 +118,55 @@ const getLogotipo = (id) => {
  */
 const createClient = (formData) => {
     return new Promise((resolve, reject) => {
-    const token = localStorage.getItem('accessToken');
+        const token = localStorage.getItem('accessToken');
 
-    if (token) {
-        const config = {
-        headers: { Authorization: `Bearer ${token}` },
-        'Content-Type': 'multipart/form-data',
-        };
+        if (token) {
+            const config = {
+                headers: { Authorization: `Bearer ${token}` },
+                'Content-Type': 'multipart/form-data',
+            };
 
-        api.post("/client/create", formData, config)
-        .then((response) => {
-            resolve(
+            api.post("/client/create", formData, config)
+            .then((response) => {
+                resolve(
+                {
+                    msgType: 'success',
+                    msg: 'Client created successfully!'
+                }
+                );
+            })
+            .catch((err) => {
+                if (err.response && err.response.status === 401) {
+                reject(
+                    {
+                    msgType: 'error',
+                    msg: 'Request not authorized.'
+                    }
+                );
+                } else if (err.response && err.response.status === 400){
+                if (err.response.data.error === "SqlUE" ){
+                    reject({ msgType: 'error', msg: 'Email is already being used.'});
+                } else {
+                    reject({ msgType: 'error', msg: 'Something is wrong.' });
+                }
+                } else {
+                reject(
+                    {
+                    msgType: 'error',
+                    msg: 'Some unknown error occurred.'
+                    }
+                );
+                }
+                
+            });
+        } else {
+            reject(
             {
-                msgType: 'success',
-                msg: 'Client created successfully!'
+                msgType: 'info',
+                msg: 'Invalid token. Need login.'
             }
             );
-        })
-        .catch((err) => {
-            if (err.response && err.response.status === 401) {
-            reject(
-                {
-                msgType: 'error',
-                msg: 'Request not authorized.'
-                }
-            );
-            } else if (err.response && err.response.status === 400){
-            if (err.response.data.error === "SqlUE" ){
-                reject({ msgType: 'error', msg: 'Email is already being used.'});
-            } else {
-                reject({ msgType: 'error', msg: 'Something is wrong.' });
-            }
-            } else {
-            reject(
-                {
-                msgType: 'error',
-                msg: 'Some unknown error occurred.'
-                }
-            );
-            }
-            
-        });
-    } else {
-        reject(
-        {
-            msgType: 'info',
-            msg: 'Invalid token. Need login.'
         }
-        );
-    }
     });
 };
 

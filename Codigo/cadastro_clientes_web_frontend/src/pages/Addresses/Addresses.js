@@ -61,7 +61,6 @@ const Addresses = (props) => {
     const fetchAddresses = async (pgNumber, pgQt, orderby) => {
         try {
             const data = await getAllAddresses({ pageNumber: pgNumber, pageQuantity: pgQt, order: orderby , clientId: id});
-            console.log('dados: ', data);
             return(data);
         } catch (error) {
             console.error('Error fetching addresses:', error);
@@ -109,7 +108,7 @@ const Addresses = (props) => {
                                 </Button>
                             </Tooltip>
                             :
-                            <Button variant="contained" size="large" href="/clients"> 
+                            <Button variant="contained" size="large" href={"/addresses/create/" + id}> 
                                 <AddIcon /> New Address
                             </Button>
                     }

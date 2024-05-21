@@ -7,6 +7,7 @@ import ClientCreate from './pages/Clients/Create';
 import ClientEdit from './pages/Clients/Edit';
 import Addresses from './pages/Addresses/Addresses';
 import AddressEdit from './pages/Addresses/Edit';
+import AddressCreate from './pages/Addresses/Create';
 import './App.css';
 import React, { useState } from 'react';
 
@@ -28,6 +29,7 @@ function App() {
           <Route path="/addresses" element={<Addresses loggedIn={loggedIn} setLoggedIn={setLoggedIn}/>} />
           <Route path="/addresses/:id" element={<Addresses loggedIn={loggedIn} setLoggedIn={setLoggedIn}/>} />
           <Route path="/addresses/edit/:id" element={<AddressEdit loggedIn={loggedIn} setLoggedIn={setLoggedIn}/>} />
+          <Route path="/addresses/create/:id" element={<AddressCreate loggedIn={loggedIn} setLoggedIn={setLoggedIn}/>} />
 
           <Route path="/home" element={<Home loggedIn={loggedIn} setLoggedIn={setLoggedIn} />}/>
         </Routes>

@@ -26,13 +26,13 @@ namespace APICadastroClientes.Controllers
         }
 
         [HttpPost]
-        [Route ("/create")]
+        [Route ("create")]
         public IActionResult Create([FromForm] LogradouroViewModel logradouroViewModel)
         {
             var cliente = _clienteService.Get(logradouroViewModel.ClienteId);
             if (cliente == null)
             {
-                return NotFound($"Address not found");
+                return NotFound($"Client not found");
             }
 
             var logradouro = _mapper.Map<Logradouro>(logradouroViewModel);
