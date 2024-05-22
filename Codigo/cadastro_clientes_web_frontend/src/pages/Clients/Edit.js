@@ -59,23 +59,29 @@ const ClientEdit = (props) => {
             })
             .catch((error) => {
                 showToastMessage(error.msgType, error.msg);
+                if(error.error == 401){
+                    localStorage.removeItem('accessToken');
+                }
             });
         } catch (error) {
             console.error('Error updating entity', error);
-            showToastMessage('error', 'errraaaado');
         }
     };
 
     const fetchClient = async () => {
-        try {
-            await getClient(id)
-            .then((response) => {
-                setName(response.name);
-                setEmail(response.email);
-            });
-        } catch (error) {
-
-        }
+        await getClient(id)
+        .then((promise) => {
+            setName(promise.name);
+            setEmail(promise.email);
+        })
+        .catch((error) => {
+            showToastMessage(error.msgType, error.msg);
+            if(error.error == 404){
+                navigate('/clients', { replace: true });
+            } else if(error.error == 401){
+                localStorage.removeItem('accessToken');
+            }
+        });
     };
 
     const fetchClientLogo = async () => {
@@ -87,14 +93,14 @@ const ClientEdit = (props) => {
                 }
             });
         } catch (error) {
-            if ( error === 401) {
-                showToastMessage('error', 'Request not authorized');
+            if ( error.error === 401) {
+                showToastMessage(error.msgType, error.msg);
             }
         }
     };
 
     useEffect(() => {
-        if (props.loggedIn) {
+        if (localStorage.getItem('accessToken')) {
             fetchClient();
             fetchClientLogo();
         } else {

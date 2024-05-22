@@ -4,8 +4,10 @@ import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { ModalDelete } from './Modals';
-import { red, blue } from '@mui/material/colors';
+import { red, blue, green } from '@mui/material/colors';
 import { useNavigate } from 'react-router-dom';
+import SearchIcon from '@mui/icons-material/Search';
+import showToastMessage from './Notify';
 
 export function DataTableClient({cols, fetchData, deleteEntity}) {
   const [rows, setRows] = useState([]);
@@ -28,19 +30,27 @@ export function DataTableClient({cols, fetchData, deleteEntity}) {
     renderCell: (params) => (
       <div>
           <IconButton
+            aria-label="details"
+            onClick={() => handleDetails(params.row.id)}
+            sx={{ color: green['A700'] }}
+          >
+            <SearchIcon />
+          </IconButton>
+
+          <IconButton
             aria-label="edit"
             onClick={() => handleEdit(params.row.id)}
             sx={{ color: blue['A700'] }} 
           >
           <EditIcon />
-
           </IconButton>
+
           <IconButton
             aria-label="delete"
             onClick={() => handleDeleteModal(params.row.id, params.row.name)}
             sx={{ color: red['A700'] }}
           >
-          <DeleteIcon />
+            <DeleteIcon />
           </IconButton>
       </div>
     ),
@@ -50,6 +60,10 @@ export function DataTableClient({cols, fetchData, deleteEntity}) {
 
   const handleEdit = async (id) => {
     navigate(`/clients/edit/${id}`);
+  };
+
+  const handleDetails = async (id) => {
+    navigate(`/clients/details/${id}`);
   };
 
   const handleDeleteModal = async (id, name) => {
@@ -68,16 +82,17 @@ export function DataTableClient({cols, fetchData, deleteEntity}) {
   }
 
   const handleDelete = async (id) => {
-    try{
-        if( await deleteEntity(id) ){
-            console.log('Client deleted successfully.');
-            updateRows();
-        } else {
-            console.log('Error when trying to delete client.');
-        }
-    } catch (error) {
-        console.log('Error when trying to request delete client.');
-    }
+    await deleteEntity(id)
+    .then((response) => {
+      showToastMessage(response.msgType, response.msg);
+      updateRows();
+    })
+    .catch((error) => {
+      showToastMessage(error.msgType, error.msg);
+      if(error.error == 401){
+        localStorage.removeItem('accessToken');
+      }
+    })         
   };
 
   const handleCloseModal = () => {
@@ -97,6 +112,7 @@ export function DataTableClient({cols, fetchData, deleteEntity}) {
       setRows(cachedData[page]);
     } else {
       let newData = await fetchData(page + 1, 5, 'C');
+      console.log('tentando: ', newData);
       
       if (newData != null) {
         setRows(newData.clientes);
@@ -171,6 +187,14 @@ export function DataTableAddress({cols, fetchData, deleteEntity}) {
     renderCell: (params) => (
       <div>
           <IconButton
+            aria-label="details"
+            onClick={() => handleDetails(params.row.id)}
+            sx={{ color: green['A700'] }}
+          >
+            <SearchIcon />
+          </IconButton>
+
+          <IconButton
             aria-label="edit"
             onClick={() => handleEdit(params.row.id)}
             sx={{ color: blue['A700'] }} 
@@ -195,6 +219,10 @@ export function DataTableAddress({cols, fetchData, deleteEntity}) {
     navigate(`/addresses/edit/${id}`);
   };
 
+  const handleDetails = async (id) => {
+    navigate(`/addresses/details/${id}`);
+  };
+
   const handleDeleteModal = async (id, name) => {
       setSelectedAddressId(id);
       setAddressName(name);
@@ -212,13 +240,17 @@ export function DataTableAddress({cols, fetchData, deleteEntity}) {
 
   const handleDelete = async (id) => {
     try{
-      console.log('id: ', id);
-        if( await deleteEntity(id) ){
-            console.log('Address deleted successfully.');
-            updateRows();
-        } else {
-            console.log('Error when trying to delete address.');
-        }
+        await deleteEntity(id)
+        .then((response) => {
+          showToastMessage(response.msgType, response.msg);
+          updateRows();
+        })
+        .catch((error) => {
+          showToastMessage(error.msgType, error.msg);
+          if(error.error == 401){
+            localStorage.removeItem('accessToken');
+          }
+        });
     } catch (error) {
         console.log('Error when trying to request delete address.');
     }

@@ -36,19 +36,23 @@ const Clients = (props) => {
         { field: 'addresses', headerName: 'Addresses', width: 90, flex: 1}
     ];
 
-    const fetchclients = async (pgNumber, pgQt, orderby) => {
-        try {
-            const data = await getAllClients({ pageNumber: pgNumber, pageQuantity: pgQt, order: orderby });
-            return(data);
-        } catch (error) {
-            console.error('Error fetching clients:', error);
-            //showToastMessage('error', 'Failed to fetch clients.');
+    const fetchClients = async (pgNumber, pgQt, orderby) => {
+        const data = await getAllClients({ pageNumber: pgNumber, pageQuantity: pgQt, order: orderby })
+        .then((response) => {
+            return(response);
+        })
+        .catch((error)=> {
+            showToastMessage(error.msgType, error.msg);
+            if(error.error == 401){
+                localStorage.removeItem('accessToken');
+            }
             return null;
-        }
+        });
+        return data;
     };
 
     useEffect(() => {
-        if (!props.loggedIn) {
+        if (!localStorage.getItem('accessToken')) {
             navigate('/login');
         }
     }, [props.loggedIn, navigate]);
@@ -73,7 +77,7 @@ const Clients = (props) => {
             </div>
 
             <div className='container px-0 my-3 d-flex flex-column'>
-                <DataTableClient cols={colClients} fetchData = {fetchclients} deleteEntity = {deleteClient} />
+                <DataTableClient cols={colClients} fetchData = {fetchClients} deleteEntity = {deleteClient} />
             </div>
 
         </Layout>

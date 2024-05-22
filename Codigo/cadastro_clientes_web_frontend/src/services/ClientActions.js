@@ -1,5 +1,4 @@
 import api from './Api';
-import showToastMessage from '../components/Notify';
 
 /**
  * requests list of clients
@@ -18,21 +17,30 @@ const getAllClients = ({ pageNumber, pageQuantity, order }) => {
         };
   
         api.get("/client/getall", config)
-          .then((response) => {
+        .then((response) => {
             resolve(response.data); // Resolva a promessa com os dados da resposta
-          })
-          .catch((err) => {
+        })
+        .catch((err) => {
             if (err.response && err.response.status === 401) {
-              showToastMessage('error', 'Request not authorized');
+                reject({
+                    msgType: 'error',
+                    msg: 'Request not authorized. Login Again!',
+                    error: err.response.status
+                });
             } else {
-              showToastMessage('error', 'Some unknown error occurred.');
+                reject({
+                    msgType: 'error',
+                    msg: 'Some unknown error occurred.',
+                    error: err.response.status
+                });
             }
-            reject(err);
-          });
-      } else {
-        showToastMessage('error', 'Invalid token.');
-        reject(new Error('Invalid token')); 
-      }
+        });
+    } else {
+        reject({
+            msgType: 'error',
+            msg: 'Invalid token. Login Again!'
+        }); 
+    }
     });
 };
   
@@ -43,31 +51,43 @@ const getAllClients = ({ pageNumber, pageQuantity, order }) => {
  */
 const getClient = (id) => {
     return new Promise((resolve, reject) => {
-    const token = localStorage.getItem('accessToken');
+        const token = localStorage.getItem('accessToken');
 
-    if (token) {
-        const config = {
-        headers: { Authorization: `Bearer ${token}` },
-        };
+        if (token) {
+            const config = {
+                headers: { Authorization: `Bearer ${token}` },
+            };
 
-        api.get("/client/get/"+id, config)
-        .then((response) => {
-            resolve(response.data); // Resolva a promessa com os dados da resposta
-        })
-        .catch((err) => {
-            if (err.response && err.response.status === 401) {
-                showToastMessage('error', 'Request not authorized');
-            } else if (err.response && err.response.status === 404) {
-                showToastMessage('error', 'Client not found');
-            } else {
-                showToastMessage('error', 'Some unknown error occurred.');
-            }
-            reject(err);
-        });
-    } else {
-        showToastMessage('error', 'Invalid token.');
-        reject(new Error('Invalid token')); 
-    }
+            api.get("/client/get/"+id, config)
+            .then((response) => {
+                resolve(response.data);
+            })
+            .catch((err) => {
+                if (err.response && err.response.status === 401) {
+                    reject({
+                        msgType: 'error',
+                        msg: 'Request not authorized.',
+                        error: err.response.status
+                    });
+                } else if (err.response && err.response.status === 404) {
+                    reject({
+                        msgType: 'error',
+                        msg: 'Client not found.',
+                        error: err.response.status
+                    });
+                } else {
+                    reject({
+                        msgType: 'error',
+                        msg: 'Some unknown error occurred.'
+                    });
+                }
+            });
+        } else {
+            reject({
+                msgType: 'error',
+                msg: 'Invalid token. Login Again!'
+            });
+        }
     });
 };
 
@@ -77,36 +97,45 @@ const getLogotipo = (id) => {
 
     if (token) {
         const config = {
-        headers: { Authorization: `Bearer ${token}` },
-        responseType: 'arraybuffer' 
+            headers: { Authorization: `Bearer ${token}` },
+            responseType: 'arraybuffer' 
         };
 
         api.get(`/client/images/${id}`, config)
         .then((response) => {
             if(response.status == 204 ){
-            resolve(null);
+                resolve(null);
             } else {
-            const byteArray = new Uint8Array(response.data);
-            let binaryString = '';
+                const byteArray = new Uint8Array(response.data);
+                let binaryString = '';
 
-            byteArray.forEach((byte) => {
-                binaryString += String.fromCharCode(byte);
-            });
-            const base64Image = btoa(binaryString);
-            resolve(base64Image);
+                byteArray.forEach((byte) => {
+                    binaryString += String.fromCharCode(byte);
+                });
+                const base64Image = btoa(binaryString);
+                resolve(base64Image);
             }
         })
         .catch((err) => {
             if (err.response && err.response.status === 401) {
-            reject(err.response.status);
-            } else if (err.response && err.response.status === 404){
-            reject(err.response.status);
+                reject({
+                    msgType: 'error',
+                    msg: 'Request not authorized. Login Again!',
+                    error: err.response.status
+                });
+            } else {
+                reject({
+                    msgType: 'error',
+                    msg: 'Some unknown error occurred.',
+                    error: err.response.status
+                });
             }
-            reject(err);
         });
     } else {
-        showToastMessage('error', 'Invalid token.');
-        reject(new Error('Invalid token')); 
+        reject({
+            msgType: 'error',
+            msg: 'Invalid token. Login Again!'
+        }); 
     }
     });
 }
@@ -163,7 +192,7 @@ const createClient = (formData) => {
             reject(
             {
                 msgType: 'info',
-                msg: 'Invalid token. Need login.'
+                msg: 'Invalid token. Login Again! Need login.'
             }
             );
         }
@@ -176,26 +205,37 @@ const deleteClient = (idClient) => {
 
     if (token) {
         const config = {
-        headers: { Authorization: `Bearer ${token}` },
-        params: { id: idClient }
+            headers: { Authorization: `Bearer ${token}` },
+            params: { id: idClient }
         };
 
         api.delete("/client/delete/" + idClient, config)
         .then((response) => {
-            showToastMessage('success', 'Client deleted successfully');
-            resolve(true);
+            resolve({
+                msgType: 'success',
+                msg: 'Client deleted successfully',
+            });
         })
         .catch((err) => {
             if (err.response && err.response.status === 401) {
-            showToastMessage('error', 'Request not authorized');
+                reject({
+                    msgType: 'error',
+                    msg: 'Request not authorized. Login Again!',
+                    error: err.response.status
+                });
             } else {
-            showToastMessage('error', 'Error when trying to delete client.');
+                reject({
+                    msgType: 'error',
+                    msg: 'Some unknown error occurred.',
+                    error: err.response.status
+                });
             }
-            reject(err);
         });
     } else {
-        showToastMessage('info', 'Invalid token.');
-        reject(new Error('Invalid token'));
+        reject({
+            msgType: 'error',
+            msg: 'Invalid token. Login Again!'
+        }); 
     }
     });
 };
@@ -226,35 +266,35 @@ const updateClient = (formData) => {
         })
         .catch((err) => {
             if (err.response && err.response.status === 401) {
-            reject(
-                {
-                msgType: 'error',
-                msg: 'Request not authorized.'
-                }
-            );
+                reject({
+                    msgType: 'error',
+                    msg: 'Request not authorized.'
+                });
             } else if (err.response && err.response.status === 400){
-            if (err.response.data.error === "SqlUE" ){
-                reject({ msgType: 'error', msg: 'Email is already being used.'});
-            } else {
-                reject({ msgType: 'error', msg: 'Something is wrong.' });
-            }
-            } else {
-            reject(
-                {
-                msgType: 'error',
-                msg: 'Some unknown error occurred.'
+                if (err.response.data.error === "SqlUE" ){
+                    reject({
+                        msgType: 'error', 
+                        msg: 'Email is already being used.'
+                    });
+                } else {
+                    reject({
+                        msgType: 'error', 
+                        msg: 'Something is wrong.' 
+                    });
                 }
-            );
+            } else {
+                reject({
+                    msgType: 'error',
+                    msg: 'Some unknown error occurred.'
+                });
             }
             
         });
     } else {
-        reject(
-        {
+        reject({
             msgType: 'info',
-            msg: 'Invalid token. Need login.'
-        }
-        );
+            msg: 'Invalid token. Login Again!'
+        });
     }
     });
 };

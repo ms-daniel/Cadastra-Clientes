@@ -56,19 +56,17 @@ const AddressCreate = (props) => {
         formData.append('Estado', state);
         formData.append('Cep', postalCode);
         
-        try {
-            await createAddress(formData)
-            .then((promise) => {
-                navigate('/Addresses/' + id, { replace: true });
-                showToastMessage(promise.msgType, promise.msg);
-            })
-            .catch((error) => {
-                showToastMessage(error.msgType, error.msg);
-            });
-        } catch (error) {
-            console.error('Error creating entity', error);
-            showToastMessage('error', 'Error when trying to create address');
-        }
+        await createAddress(formData)
+        .then((promise) => {
+            navigate('/Addresses/' + id, { replace: true });
+            showToastMessage(promise.msgType, promise.msg);
+        })
+        .catch((error) => {
+            showToastMessage(error.msgType, error.msg);
+            if(error.error == 401){
+                localStorage.removeItem('accessToken');
+            }
+        });
     };
 
     const fetchClient = async () => {
@@ -78,18 +76,22 @@ const AddressCreate = (props) => {
                 setClientName(response.name);
             })
             .catch((error) => {
+                showToastMessage(error.msgType, error.msg);
+                if(error.error == 401){
+                    localStorage.removeItem('accessToken');
+                }
                 navigate('/addresses/');
             });
         } catch (error) {
-            console.log(error);
         }
     };
 
     useEffect(() => {
-        if (!props.loggedIn) {
+        if (!localStorage.getItem('accessToken')) {
             navigate('/login');
+        } else {
+            fetchClient();
         }
-        fetchClient();
     }, [props.loggedIn, navigate]);
 
     const handleChange = (e) => {
@@ -180,7 +182,7 @@ const AddressCreate = (props) => {
                             color="primary"
                             onClick={() => history.push('/list')} // Redirecionar de volta à lista de entidades
                             className="me-3"
-                            href='/Address'
+                            href='/addresses'
                         >
                             Back to the List
                         </Button>

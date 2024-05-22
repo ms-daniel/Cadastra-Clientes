@@ -23,18 +23,18 @@ const Home = (props) => {
     const navigate = useNavigate();
 
     const colClients = [
-        { field: 'id', headerName: 'ID', width: 70 },
-        { field: 'name', headerName: 'Name', width: 250 },
-        { field: 'email', headerName: 'Email', width: 250 }
+        { field: 'id', headerName: 'ID', width: 70, flex: 1 },
+        { field: 'name', headerName: 'Name', width: 250, flex: 10 },
+        { field: 'email', headerName: 'Email', width: 250, flex: 10 }
     ];
 
     const colAddresses = [
-        { field: 'id', headerName: 'ID', width: 70 },
-        { field: 'clienteId', headerName: 'Client_ID', width: 70 },
-        { field: 'rua', headerName: 'Street', width: 250 },
-        { field: 'numero', headerName: 'Number', width: 70 },
-        { field: 'cidade', headerName: 'City', width: 150 },
-        { field: 'estado', headerName: 'State', width: 70 }
+        { field: 'id', headerName: 'ID', width: 70, flex: 1 },
+        { field: 'clienteId', headerName: 'Client_ID', width: 70, flex: 1 },
+        { field: 'rua', headerName: 'Street', width: 250, flex: 5 },
+        { field: 'numero', headerName: 'Number', width: 70, flex: 1 },
+        { field: 'cidade', headerName: 'City', width: 150,flex: 2 },
+        { field: 'estado', headerName: 'State', width: 70, flex: 1 }
     ];
 
     const [clients, setClients] = useState([]);
@@ -44,7 +44,16 @@ const Home = (props) => {
     useEffect(() => {
         const fetchClients = async () => {
             try {
-                const data = await getAllClients({ pageNumber: 1, pageQuantity: 5 , order: 'D'});
+                const data = await getAllClients({ pageNumber: 1, pageQuantity: 5 , order: 'D'})
+                .then((response) => {
+                    return response;
+                })
+                .catch((error) => {
+                    showToastMessage(error.msgType, error.msg);
+                    if(error.error == 401){
+                        localStorage.removeItem('accessToken');
+                    }
+                });
                 setClients(data.clientes);
             } catch (error) {
                 console.error('Error fetching clients:', error);
@@ -55,17 +64,17 @@ const Home = (props) => {
             try {
                 const data = await getAllAddresses({ pageNumber: 1, pageQuantity: 5 , order: 'D'});
                 setAddresses(data.addresses);
-                console.log(data.addresses);
             } catch (error) {
                 console.error('Error fetching addresses:', error);
             }
         };
 
-        if (props.loggedIn) {
+        if (localStorage.getItem('accessToken')) {
             fetchClients();
             fetchAddresses();
         } else {
-            navigate('/login');
+            showToastMessage('error', 'Please, Login!');
+            navigate('/login', { replace: true });
         }
     }, [props.loggedIn, navigate]);
 

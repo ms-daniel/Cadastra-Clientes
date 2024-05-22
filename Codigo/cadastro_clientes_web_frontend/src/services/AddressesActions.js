@@ -30,16 +30,25 @@ const getAllAddresses = ({ pageNumber, pageQuantity, order, clientId = null }) =
           })
           .catch((err) => {
             if (err.response && err.response.status === 401) {
-                showToastMessage('error', 'Request not authorized');
+                reject({
+                    msgType: 'error',
+                    msg: 'Request not authorized. Login Again!',
+                    error: err.response.status
+                });
             } else {
-                showToastMessage('error', 'Some unknown error occurred.');
+                reject({
+                    msgType: 'error',
+                    msg: 'Some unknown error occurred.',
+                    error: err.response.status
+                });
             }
-            reject(err);
-          });
-      } else {
-        showToastMessage('error', 'Invalid token.');
-        reject(new Error('Invalid token')); 
-      }
+        });
+    } else {
+        reject({
+            msgType: 'error',
+            msg: 'Invalid token. Login Again!'
+        }); 
+    }
     });
 };
   
@@ -63,15 +72,29 @@ const getAddress = (id) => {
         })
         .catch((err) => {
             if (err.response && err.response.status === 401) {
-            showToastMessage('error', 'Request not authorized');
+                reject({
+                    msgType: 'error',
+                    msg: 'Request not authorized.',
+                    error: err.response.status
+                });
+            } else if (err.response && err.response.status === 404) {
+                reject({
+                    msgType: 'error',
+                    msg: 'Address not found.',
+                    error: err.response.status
+                });
             } else {
-            showToastMessage('error', 'Some unknown error occurred.');
+                reject({
+                    msgType: 'error',
+                    msg: 'Some unknown error occurred.'
+                });
             }
-            reject(err);
         });
     } else {
-        showToastMessage('error', 'Invalid token.');
-        reject(new Error('Invalid token')); 
+        reject({
+            msgType: 'error',
+            msg: 'Invalid token. Login Again!'
+        });
     }
     });
 };
@@ -93,47 +116,36 @@ const createAddress = (formData) => {
 
             api.post("/logradouro/create", formData, config)
             .then((response) => {
-                resolve(
-                {
+                resolve({
                     msgType: 'success',
                     msg: 'Address created successfully!'
-                }
-                );
+                });
             })
             .catch((err) => {
                 if (err.response && err.response.status === 401) {
-                    reject(
-                        {
+                    reject({
                             msgType: 'error',
                             msg: 'Request not authorized.'
-                        }
-                    );
+                    });
                 } else if (err.response && err.response.status === 400){
                     console.log(err.response);
-                    reject(
-                        {
+                    reject({
                             msgType: 'error',
                             msg: 'Something is wrong.'
-                        }
-                    );
+                    });
                 } else {
-                    reject
-                    (
-                        {
+                    reject({
                         msgType: 'error',
                         msg: 'Some unknown error occurred.'
-                        }
-                    );
+                    });
                 }
                 
             });
         } else {
-            reject(
-            {
+            reject({
                 msgType: 'info',
                 msg: 'Invalid token. Need login.'
-            }
-            );
+            });
         }
     });
 };
@@ -150,21 +162,31 @@ const deleteAddress = (idAd) => {
 
             api.delete("/logradouro/delete/" + idAd, config)
             .then((response) => {
-                showToastMessage('success', 'Address deleted successfully');
-                resolve(true);
+                resolve({
+                    msgType: 'success',
+                    msg: 'Address deleted successfully',
+                });
             })
             .catch((err) => {
                 if (err.response && err.response.status === 401) {
-                    showToastMessage('error', 'Request not authorized');
-                    
+                    reject({
+                        msgType: 'error',
+                        msg: 'Request not authorized. Login Again!',
+                        error: err.response.status
+                    });
                 } else {
-                    showToastMessage('error', 'Error when trying to delete address.');
+                    reject({
+                        msgType: 'error',
+                        msg: 'Some unknown error occurred.',
+                        error: err.response.status
+                    });
                 }
-                reject(err);
             });
         } else {
-            showToastMessage('info', 'Invalid token.');
-            reject(new Error('Invalid token'));
+            reject({
+                msgType: 'error',
+                msg: 'Invalid token. Login Again!'
+            }); 
         }
     });
 };

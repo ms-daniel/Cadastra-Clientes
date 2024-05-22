@@ -64,6 +64,9 @@ const AddressEdit = (props) => {
             })
             .catch((error) => {
                 showToastMessage(error.msgType, error.msg);
+                if(error.error == 401){
+                    localStorage.removeItem('accessToken');
+                }
             });
         } catch (error) {
             console.error('Error updating entity', error);
@@ -72,27 +75,32 @@ const AddressEdit = (props) => {
     };
 
     const fetchAddress = async () => {
-        try {
-            await getAddress(id)
-            .then((response) => {
-                setClientName(response.clienteName);
-                setStreet(response.rua);
-                setNumber(response.numero);
-                setNeighbor(response.bairro);
-                setCity(response.cidade);
-                setState(response.estado);
-                setPostalCode(response.cep);
-            });
-        } catch (error) {
-
-        }
+        await getAddress(id)
+        .then((response) => {
+            setClientName(response.clienteName);
+            setStreet(response.rua);
+            setNumber(response.numero);
+            setNeighbor(response.bairro);
+            setCity(response.cidade);
+            setState(response.estado);
+            setPostalCode(response.cep);
+        })
+        .catch((error) => {
+            showToastMessage(error.msgType, error.msg);
+            if(error.error == 404){
+                navigate('/addresses', { replace: true });
+            } else if(error.error == 401){
+                localStorage.removeItem('accessToken');
+            }
+        });
     };
 
 
     useEffect(() => {
-        if (props.loggedIn) {
+        if (localStorage.getItem('accessToken')) {
             fetchAddress();
         } else {
+            localStorage.removeItem('accessToken');
             navigate('/login');
         }
     }, [props.loggedIn, navigate]);
@@ -185,7 +193,7 @@ const AddressEdit = (props) => {
                             color="primary"
                             onClick={() => history.push('/list')} // Redirecionar de volta à lista de entidades
                             className="me-3"
-                            href='/Address'
+                            href='/addresses'
                         >
                             Back to the List
                         </Button>

@@ -43,7 +43,8 @@ const Login = (props) => {
 
   return (
     <div className='container d-flex align-items-center justify-content-center vh-100'>
-      { props.loggedIn ? (navigate('/home')) : (
+      <ToastContainer limit={2} stacked />
+      { localStorage.getItem('accessToken') != null ? (navigate('/home')) : (
           <div className={'container-fluid flex'}>
 
             <div className={'titleContainer'}>

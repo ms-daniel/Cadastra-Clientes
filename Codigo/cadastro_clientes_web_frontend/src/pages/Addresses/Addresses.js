@@ -35,11 +35,12 @@ const Addresses = (props) => {
     const { id } = useParams();
 
     const colAddresses = [
-        { field: 'id', headerName: 'ID', width: 70 },
+        { field: 'id', headerName: 'ID', width: 70, flex: 1 },
         { 
             field: 'clienteId', 
             headerName: 'Client_ID', 
             width: 70,
+            flex: 1,
             cellClassName: 'd-flex justify-content-center',
             renderCell: (params) => (
                 <Button
@@ -50,22 +51,27 @@ const Addresses = (props) => {
                 </Button>
             )
         },
-        { field: 'rua', headerName: 'Street', width: 250 },
-        { field: 'numero', headerName: 'Number', width: 70 },
-        { field: 'bairro', headerName: 'Neighborhood', width: 110 },
-        { field: 'cidade', headerName: 'City', width: 150 },
-        { field: 'estado', headerName: 'State', width: 70 },
-        { field: 'cep', headerName: 'Postal Code', width: 100 }
+        { field: 'rua', headerName: 'Street', width: 250, flex: 3 },
+        { field: 'numero', headerName: 'Number', width: 70, flex: 1 },
+        { field: 'bairro', headerName: 'Neighborhood', width: 110, flex: 2 },
+        { field: 'cidade', headerName: 'City', width: 150, flex: 2 },
+        { field: 'estado', headerName: 'State', width: 70, flex: 1 },
+        { field: 'cep', headerName: 'Postal Code', width: 100, flex: 2 }
     ];
 
     const fetchAddresses = async (pgNumber, pgQt, orderby) => {
-        try {
-            const data = await getAllAddresses({ pageNumber: pgNumber, pageQuantity: pgQt, order: orderby , clientId: id});
+            const data = await getAllAddresses({ pageNumber: pgNumber, pageQuantity: pgQt, order: orderby , clientId: id})
+            .then((response) => {
+                return(response);
+            })
+            .catch((error) => {
+                showToastMessage(error.msgType, error.msg);
+                if(error.error == 401){
+                    localStorage.removeItem('accessToken');
+                }
+                return null;
+            });
             return(data);
-        } catch (error) {
-            console.error('Error fetching addresses:', error);
-            return null;
-        }
     };
 
     const fetchClient = async () => {
@@ -73,13 +79,19 @@ const Addresses = (props) => {
             await getClient(id)
             .then((response) => {
                 setClientName(response.name);
+            })
+            .catch((error) => {
+                showToastMessage
+                if(error.error == 401){
+                    localStorage.removeItem('accessToken');
+                }
             });
         } catch (error) {
         }
     };
 
     useEffect(() => {
-        if (!props.loggedIn) {
+        if (!localStorage.getItem('accessToken')) {
             navigate('/login');
         }
         if(id != null){
@@ -118,6 +130,28 @@ const Addresses = (props) => {
             <div className='container px-0 my-3 d-flex flex-column'>
                 <DataTableAddress cols={colAddresses} fetchData = {fetchAddresses} deleteEntity = {deleteAddress}/>
             </div>
+
+            { id &&
+                <div className="d-flex justify-content-center mt-3">
+                    <Button
+                        variant="outlined"
+                        color="primary"
+                        onClick={() => history.push('/list')} // Redirecionar de volta à lista de entidades
+                        className="me-3"
+                        href='/addresses'
+                    >
+                        Back to the List
+                    </Button>
+
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        href={"/clients/details/" + id}
+                    >
+                        View Client
+                    </Button>
+                </div> 
+            }
 
         </Layout>
     );

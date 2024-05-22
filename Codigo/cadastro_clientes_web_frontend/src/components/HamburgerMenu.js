@@ -43,7 +43,7 @@ export default function DrawerAppBar() {
         {navItems.map((item) => (
           <ListItem key={item.Name} disablePadding>
             <ListItemButton href={item.Link} sx={{ textAlign: 'center' }}>
-              <ListItemText primary={item.Name} /> {/* Ajuste aqui */}
+              <ListItemText primary={item.Name} />
             </ListItemButton>
           </ListItem>
         ))}
@@ -73,9 +73,15 @@ export default function DrawerAppBar() {
           </Box>
           <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
             {navItems.map((item) => (
-              <Button key={item.Name} sx={{ color: '#fff' }} href={item.Link}>
-                {item.Name}
-              </Button>
+              item.Name === 'Logout' ? (
+                <Button key={item.Name} sx={{ color: '#fff' }} onClick={() => localStorage.removeItem('accessToken')} href= {item.Link}>
+                  {item.Name}
+                </Button>
+              ) : (
+                <Button key={item.Name} sx={{ color: '#fff' }} href= {item.Link}>
+                  {item.Name}
+                </Button>
+              )
             ))}
           </Box>
         </Toolbar>
